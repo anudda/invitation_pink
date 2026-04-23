@@ -75,13 +75,28 @@ b64_photos = [get_b64(p) for p in photos]
 # 5. 앨범 컴포넌트
 thumbs = "".join([f'<img class="t" src="{p}" onclick="s(this, \'{p}\', {i})">' for i, p in enumerate(b64_photos)])
 album_html = f"""
+# 5. 앨범 컴포넌트 (높이 고정 버전)
+thumbs = "".join([f'<img class="t" src="{p}" onclick="s(this, \'{p}\', {i})">' for i, p in enumerate(b64_photos)])
+album_html = f"""
 <style>
     body {{ margin: 0; background: transparent; font-family: sans-serif; text-align: center; overflow: hidden; }}
-    .main {{ width: 100%; max-width: 450px; max-height: 320px; height: auto; object-fit: contain; margin: 0 auto; display: block; }}
-    .row {{ display: flex; align-items: flex-end; justify-content: center; gap: 6px; max-width: 450px; margin: 3px auto 5px; padding: 0 10px; box-sizing: border-box; }}
-    .t {{ width: 22%; height: auto; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; object-fit: contain; display: block; }}
+    
+    /* [핵심] 메인 사진 영역 높이 고정 */
+    .main {{ 
+        width: 100%; 
+        max-width: 450px; 
+        height: 400px;           /* 높이를 400px로 고정 (원하는 높이로 조절 가능) */
+        object-fit: contain;     /* 사진 비율을 유지하며 고정된 영역 안에 쏙 넣기 */
+        background: #fefefe;    /* 사진이 비는 공간을 채울 배경색 (연한 핑크/화이트 추천) */
+        margin: 0 auto; 
+        display: block; 
+        border-radius: 12px;
+    }}
+    
+    .row {{ display: flex; align-items: center; justify-content: center; gap: 6px; max-width: 450px; margin: 15px auto 5px; padding: 0 10px; box-sizing: border-box; }}
+    .t {{ width: 60px; height: 60px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; object-fit: cover; display: block; }}
     .active {{ border-color: #FF8FAB !important; }}
-    .cnt {{ color: #FF8FAB; font-size: 13px; font-weight: bold; margin: 0; }}
+    .cnt {{ color: #FF8FAB; font-size: 13px; font-weight: bold; margin: 5px 0 0; }}
 </style>
 <img id="m" class="main" src="{b64_photos[0]}">
 <div class="row">{thumbs}</div>
@@ -96,7 +111,8 @@ album_html = f"""
     document.querySelector('.t').classList.add('active');
 </script>
 """
-components.html(album_html, height=ALBUM_HEIGHT)
+# ⚠️ 주의: 앨범 전체 높이도 맞춰줘야 잘리지 않습니다.
+components.html(album_html, height=520)
 
 # 6. 정보 카드 및 버튼
 st.markdown("""
