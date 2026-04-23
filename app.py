@@ -60,7 +60,7 @@ iframe {{
 # 3. 타이틀 섹션 (서브 문구 폰트를 'Gaegu'로 변경하여 귀여움 업그레이드!)
 st.markdown(f"""
 <div style="text-align: center; position: relative; z-index: 10;">
-    <h1 style="font-family: 'Gaegu', cursive; color: #FF8FAB; font-size: 2.8rem; margin: 0; line-height: 1.2;">귀여운 지연이의<br>첫 생일 잔치 🎂</h1>
+    <h1 style="font-family: 'Gaegu', cursive; color: #FF8FAB; font-size: 2.8rem; margin: 0; line-height: 1.2;">Jiyeon's<br>1st Birthday</h1>
     <p style="font-family: 'Gaegu', cursive; color: #A89080; font-size: 1.25rem; margin-top: 15px; margin-bottom: {TOP_GAP}px; font-weight: bold; line-height: 1.6;">
         향긋한 봄 내음이 가득한 4월<br>
         지연이의 첫 돌잔치에 여러분을 초대합니다
