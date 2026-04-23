@@ -5,131 +5,100 @@ import base64
 # 1. 페이지 설정
 st.set_page_config(page_title="지연이의 돌잔치에 초대합니다", page_icon="🎂", layout="centered")
 
-# [함수] 이미지 변환
-def get_base64_image(image_path):
-    try:
-        with open(image_path, "rb") as img_file:
-            return "data:image/jpeg;base64," + base64.b64encode(img_file.read()).decode()
+# [함수] 이미지 텍스트 변환 (경량화)
+def get_b64(path):
+    try: return "data:image/jpeg;base64," + base64.b64encode(open(path, "rb").read()).decode()
     except: return ""
 
-# 2. 메인 스타일 설정
+# 2. 통합 스타일 및 배경 애니메이션
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
-.stApp { background-color: #FFF5F5 !important; }
 
-/* 전체 컨테이너 여백 */
-.block-container { padding-top: 2rem !important; padding-bottom: 3rem !important; }
-div[data-testid="stVerticalBlock"] { gap: 0rem !important; }
+.stApp { background-color: #FFF5F5 !important; font-family: 'Gowun Batang', serif; }
+.block-container { padding: 2rem 1rem 3rem !important; }
+div[data-testid="stVerticalBlock"] { gap: 0.8rem !important; } /* 위젯 기본 간격 최적화 */
+footer, header, #MainMenu { display: none !important; }
 
-footer, header, #MainMenu {visibility: hidden; display: none !important;}
+/* 앨범 액자(iframe) 기본 여백 초기화 - 겹침 방지 */
+iframe { border: none; margin: 0 !important; display: block; }
 
-.main-title { 
-    font-family: 'Gaegu', cursive !important; 
-    color: #FF8FAB !important; 
-    font-size: 2.8rem !important; 
-    text-align: center; 
-    line-height: 1.2; 
-    margin-bottom: 5px; 
-}
-.sub-quote { 
-    font-family: 'Gowun Batang', serif !important; 
-    color: #B2A496 !important; 
-    text-align: center; 
-    font-size: 0.9rem !important; 
-    margin-bottom: 20px;
-}
-
-/* 앨범 프레임 - 하단 정보카드와 겹치지 않게 조절 */
-iframe { 
-    width: 100%; 
-    border: none; 
-    margin-bottom: -45px !important; /* 겹치지 않을 만큼만 적당히 당김 */
-}
-
-.petal { position: fixed; top: -5%; z-index: 0; animation: petal-fall 12s infinite linear; color: #FFC2D1; font-size: 20px; pointer-events: none; }
-@keyframes petal-fall { 0% { transform: translateY(-5%) rotate(0deg); opacity: 0; } 10% { opacity: 0.8; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
+/* 흩날리는 꽃잎 애니메이션 */
+.petal { position: fixed; top: -10%; animation: fall linear infinite; pointer-events: none; z-index: 0; }
+@keyframes fall { 100% { transform: translateY(110vh) rotate(720deg); } }
 </style>
-<div class="petal" style="left:15%; animation-delay:0s;">🌸</div>
-<div class="petal" style="left:80%; animation-delay:4s;">💕</div>
+
+<div class="petal" style="left:10%; animation-duration:10s; font-size:20px;">🌸</div>
+<div class="petal" style="left:25%; animation-duration:12s; animation-delay:2s; font-size:16px;">💕</div>
+<div class="petal" style="left:40%; animation-duration:9s; animation-delay:1s; font-size:22px;">🌸</div>
+<div class="petal" style="left:60%; animation-duration:13s; animation-delay:4s; font-size:15px;">💕</div>
+<div class="petal" style="left:75%; animation-duration:11s; animation-delay:3s; font-size:18px;">🌸</div>
+<div class="petal" style="left:90%; animation-duration:8s; animation-delay:0s; font-size:20px;">💕</div>
 """, unsafe_allow_html=True)
 
-# 3. 타이틀
-st.markdown('<h1 class="main-title">지연이의<br>첫 생일 🎂</h1>', unsafe_allow_html=True)
-st.markdown('<p class="sub-quote">지연이의 첫 돌잔치에 초대합니다.</p>', unsafe_allow_html=True)
-
-# 4. 사진 데이터 준비
-photos = ["baby.jpg", "baby1.jpg", "baby2.jpg", "baby3.jpg"]
-encoded_photos = [get_base64_image(p) for p in photos]
-
-# 5. 앨범 컴포넌트
-thumb_html = "".join([
-    f'<div onclick="changeImg(\'{img}\', {i})" class="thumb-item" id="thumb-{i}"><img src="{img}"></div>'
-    for i, img in enumerate(encoded_photos)
-])
-
-album_content = f"""
-<div id="album-container">
-    <div class="main-wrapper"><img id="main-img" src="{encoded_photos[0]}"></div>
-    <div class="thumb-list">{thumb_html}</div>
-    <p id="counter">1 / {len(photos)}</p>
+# 3. 타이틀 섹션 (파이썬 코드로 깔끔하게 분리)
+st.markdown("""
+<div style="text-align: center; position: relative; z-index: 10;">
+    <h1 style="font-family: 'Gaegu', cursive; color: #FF8FAB; font-size: 2.8rem; margin: 0; line-height: 1.2;">지연이의<br>첫 생일 🎂</h1>
+    <p style="color: #B2A496; font-size: 0.9rem; margin-top: 5px;">지연이의 첫 돌잔치에 초대합니다.</p>
 </div>
+""", unsafe_allow_html=True)
 
+# 4. 사진 데이터 및 앨범 렌더링
+photos = ["baby.jpg", "baby1.jpg", "baby2.jpg", "baby3.jpg"]
+b64_photos = [get_b64(p) for p in photos]
+
+# 썸네일 HTML 반복문 한 줄로 압축
+thumbs = "".join([f'<img class="t" src="{p}" onclick="s(this, \'{p}\', {i})">' for i, p in enumerate(b64_photos)])
+
+# 초경량 앨범 HTML
+album_html = f"""
 <style>
-    body {{ margin: 0; padding: 0; background: transparent; overflow: hidden; }}
-    #album-container {{ display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }}
-    .main-wrapper {{ 
-        width: 100%; 
-        height: 350px; 
-        display: flex; justify-content: center; align-items: center; 
-    }}
-    #main-img {{ max-width: 100%; max-height: 100%; object-fit: contain; }}
-    .thumb-list {{ 
-        display: flex; flex-wrap: nowrap; justify-content: center; align-items: flex-end; 
-        gap: 6px; width: 100%; padding: 0 10px; box-sizing: border-box; 
-    }}
-    .thumb-item {{ flex: 1; cursor: pointer; border: 2px solid transparent; border-radius: 6px; overflow: hidden; }}
-    .thumb-item img {{ width: 100%; height: auto; display: block; }}
+    body {{ margin: 0; background: transparent; font-family: sans-serif; text-align: center; }}
+    /* 대표 사진: 직각 유지, 350px 고정, 잘림 없음 */
+    .main {{ width: 100%; max-width: 450px; height: 350px; object-fit: contain; margin: 0 auto; display: block; }}
+    /* 썸네일 줄: 원본 비율 유지, 아래로 정렬 */
+    .row {{ display: flex; align-items: flex-end; justify-content: center; gap: 8px; max-width: 450px; margin: 10px auto 5px; padding: 0 10px; box-sizing: border-box; }}
+    .t {{ flex: 1; width: 100%; height: auto; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }}
     .active {{ border-color: #FF8FAB !important; }}
-    #counter {{ color: #FF8FAB; font-size: 13px; font-weight: bold; margin: 2px 0; font-family: sans-serif; }}
+    .cnt {{ color: #FF8FAB; font-size: 13px; font-weight: bold; margin: 0; }}
 </style>
 
+<img id="m" class="main" src="{b64_photos[0]}">
+<div class="row">{thumbs}</div>
+<p id="c" class="cnt">1 / {len(photos)}</p>
+
 <script>
-function changeImg(src, idx) {{
-    const mainImg = document.getElementById('main-img');
-    const counter = document.getElementById('counter');
-    mainImg.style.opacity = 0.5;
-    setTimeout(() => {{
-        mainImg.src = src;
-        mainImg.style.opacity = 1;
-        counter.innerText = (idx + 1) + " / {len(photos)}";
-    }}, 100);
-    const thumbs = document.getElementsByClassName('thumb-item');
-    for(let i=0; i<thumbs.length; i++) {{ thumbs[i].classList.remove('active'); }}
-    document.getElementById('thumb-' + idx).classList.add('active');
-}}
-window.onload = () => changeImg('{encoded_photos[0]}', 0);
+    function s(el, src, i) {{
+        document.getElementById('m').src = src;
+        document.getElementById('c').innerText = (i+1) + " / {len(photos)}";
+        document.querySelectorAll('.t').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+    }}
+    document.querySelector('.t').classList.add('active');
 </script>
 """
 
-components.html(album_content, height=500)
+# 전체 높이를 480px로 여유롭게 고정하여 겹침 방지
+components.html(album_html, height=480)
 
-# 6. [해결] 정보 섹션과 버튼을 하나의 덩어리로 묶음
+# 5. 정보 카드 및 버튼 
+# 덩어리로 묶어 Streamlit 레이아웃의 변수 차단
 st.markdown("""
 <div style="position: relative; z-index: 10;">
-    <div style="background-color: rgba(255, 255, 255, 0.8); padding: 25px 15px; border-radius: 35px; text-align: center; border: 1px solid rgba(255, 143, 171, 0.12); box-shadow: 0 10px 20px rgba(255, 143, 171, 0.05); margin-bottom: 15px;">
-        <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; font-family: 'Gowun Batang';">DATE</p>
-        <p style="font-family: 'Gowun Batang'; font-size: 1.15rem; color: #4A4A4A; margin-bottom: 18px;">2026년 10월 24일 (토) 오후 1시</p>
-        <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; font-family: 'Gowun Batang';">LOCATION</p>
-        <p style="font-family: 'Gowun Batang'; font-size: 1.1rem; color: #4A4A4A; margin-bottom: 4px;"><b>행복 가든 스테이</b></p>
-        <p style="font-family: 'Gowun Batang'; font-size: 0.8rem; color: #888;">서울특별시 강남구 행복로 123</p>
+    <div style="background: rgba(255,255,255,0.85); padding: 25px; border-radius: 30px; text-align: center; border: 1px solid rgba(255,143,171,0.2); box-shadow: 0 8px 15px rgba(255,143,171,0.05); margin-bottom: 15px;">
+        <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: bold; letter-spacing: 2px; margin: 0 0 5px;">DATE</p>
+        <p style="font-size: 1.15rem; color: #4A4A4A; margin: 0 0 15px;">2026년 10월 24일 (토) 오후 1시</p>
+        <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: bold; letter-spacing: 2px; margin: 0 0 5px;">LOCATION</p>
+        <p style="font-size: 1.1rem; color: #4A4A4A; font-weight: bold; margin: 0 0 2px;">행복 가든 스테이</p>
+        <p style="font-size: 0.8rem; color: #888; margin: 0;">서울특별시 강남구 행복로 123</p>
     </div>
 
-    <div style="display: flex; justify-content: center; gap: 10px; width: 100%;">
-        <a href="https://map.kakao.com" target="_blank" style="flex: 1; text-decoration: none; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; font-family: 'Gowun Batang'; font-weight: 700; font-size: 0.85rem; text-align: center;">카카오맵 확인</a>
-        <a href="https://map.naver.com" target="_blank" style="flex: 1; text-decoration: none; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; font-family: 'Gowun Batang'; font-weight: 700; font-size: 0.85rem; text-align: center;">네이버 지도 확인</a>
+    <div style="display: flex; gap: 10px;">
+        <a href="https://map.kakao.com" target="_blank" style="flex: 1; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; text-align: center; text-decoration: none; font-weight: bold; font-size: 0.85rem;">카카오맵 확인</a>
+        <a href="https://map.naver.com" target="_blank" style="flex: 1; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; text-align: center; text-decoration: none; font-weight: bold; font-size: 0.85rem;">네이버 지도 확인</a>
     </div>
 
-    <p style='text-align: center; color: #FF8FAB; font-family: "Gaegu"; font-size: 1.1rem; margin-top: 30px;'>지연이의 첫 생일을 축하해 주셔서 감사합니다.</p>
+    <p style="text-align: center; color: #FF8FAB; font-family: 'Gaegu', cursive; font-size: 1.15rem; margin-top: 30px;">지연이의 첫 생일을 축하해 주셔서 감사합니다.</p>
 </div>
 """, unsafe_allow_html=True)
