@@ -35,10 +35,20 @@ st.markdown("""
 st.markdown("<h1>아기의<br>첫 번째 생일 🎂</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; font-size: 1.5rem;'>꽃보다 예쁜 아기의<br>첫 돌잔치에 초대합니다 🌸</p>", unsafe_allow_html=True)
 
-video_data = get_video_base64("baby.mp4")
-if video_data:
-    st.markdown(f'<video width="100%" autoplay loop muted playsinline style="border-radius: 20px;"><source src="data:video/mp4;base64,{video_data}" type="video/mp4"></video>', unsafe_allow_html=True)
+# 1. 파일을 읽어서 데이터로 변환 (파일명 확인!)
+image_data = get_image_base64("baby.jpg") 
 
+# 2. 만약 데이터를 성공적으로 가져왔다면?
+if image_data:
+    # 3. HTML 태그를 사용해 화면에 그리기
+    st.markdown(
+        f'''
+        <img src="data:image/jpeg;base64,{image_data}" 
+             style="width: 100%; border-radius: 20px;">
+        ''', 
+        unsafe_allow_html=True
+    )
+    
 st.markdown("""
     <div class='info-box'>
         <h3>📅 일시</h3>
