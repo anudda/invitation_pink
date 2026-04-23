@@ -1,13 +1,13 @@
 import streamlit as st
 
-# 1. 페이지 설정 (탭 제목 수정 완료! ✨)
+# 1. 페이지 설정
 st.set_page_config(
     page_title="지연이의 돌잔치에 초대합니다", 
     page_icon="🎂", 
     layout="centered"
 )
 
-# 2. CSS 스타일 최적화
+# 2. CSS 스타일 최적화 (타이틀 크기 하향 조정)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
@@ -19,10 +19,11 @@ footer, header, #MainMenu, .stAppDeployButton, #viewerBadge {visibility: hidden;
 .main-title {
     font-family: 'Gaegu', cursive !important;
     color: #FF8FAB !important;
-    font-size: 3.5rem !important;
+    font-size: 2.8rem !important; /* 3.5rem에서 2.8rem으로 축소 */
     text-align: center;
-    line-height: 1.1;
+    line-height: 1.2;
     margin-bottom: 5px;
+    letter-spacing: -1px; /* 자간을 좁혀 한 줄 유지 유도 */
 }
 
 .sub-quote {
@@ -33,7 +34,6 @@ footer, header, #MainMenu, .stAppDeployButton, #viewerBadge {visibility: hidden;
     margin-bottom: 25px;
 }
 
-/* 이미지 영역: 흰 선 차단 및 둥근 프레임 */
 .img-container {
     padding: 0px !important;
     background-color: transparent !important; 
@@ -49,7 +49,6 @@ div[data-testid="stImage"] > img {
     border-radius: 100px 100px 20px 20px;
 }
 
-/* 사진 목록(라디오 버튼) 커스텀 */
 div[data-testid="stRadio"] div[role="radiogroup"] {
     justify-content: center;
     gap: 10px;
@@ -81,22 +80,18 @@ div[data-testid="stRadio"] label {
 <div class="petal" style="left:80%; animation-delay:4s;">💕</div>
 """, unsafe_allow_html=True)
 
-# 3. 본문 구성 (지연)
-st.markdown('<h1 class="main-title">지연이의<br>첫 번째 생일 🎂</h1>', unsafe_allow_html=True)
+# 3. 본문 구성
+st.markdown('<h1 class="main-title">지연이의 첫 생일 🎂</h1>', unsafe_allow_html=True)
 st.markdown('<p class="sub-quote">세상에서 가장 소중한 지연이의<br>첫 돌잔치에 초대합니다.</p>', unsafe_allow_html=True)
 
-# 4. 사진 구성 (대표사진: baby.jpg / 나머지: 1.jpg, 2.jpg...)
+# 4. 사진 구성
 photos = ["baby.jpg", "1.jpg", "2.jpg", "3.jpg"] 
-
-# 슬라이더 선택 (숫자 대신 '갤러리'로 깔끔하게)
 selected_photo_idx = st.radio("갤러리", range(len(photos)), horizontal=True, label_visibility="collapsed")
 
-# 사진 출력 영역
 st.markdown('<div class="img-container">', unsafe_allow_html=True)
 st.image(photos[selected_photo_idx], use_column_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 사진 번호 표시
 st.markdown(f"<p style='text-align: center; color: #FF8FAB; font-size: 0.8rem; margin-top: -10px;'>{selected_photo_idx + 1} / {len(photos)}</p>", unsafe_allow_html=True)
 
 # 5. 정보 섹션
