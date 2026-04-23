@@ -42,10 +42,12 @@ st.markdown('<p class="sub-quote">지연이의 첫 돌잔치에 초대합니다.
 photos = ["baby.jpg", "baby1.jpg", "baby2.jpg", "baby3.jpg"]
 encoded_photos = [get_base64_image(p) for p in photos]
 
-# 5. [수정] 직각 대표 사진 반응형 앨범
+# 5. [수정] 썸네일 원본 비율 유지 앨범
+# aspect-ratio를 제거하고 width를 조절하여 원본 비율대로 나오게 설정
 thumb_items_html = "".join([
-    f'<div onclick="changeImg(\'{img}\', {i})" class="thumb-item" id="thumb-{i}" style="flex: 1; aspect-ratio: 1/1; cursor: pointer; border-radius: 8px; overflow: hidden; border: 2px solid transparent;">'
-    f'<img src="{img}" style="width: 100%; height: 100%; object-fit: cover;"></div>' 
+    f'''<div onclick="changeImg('{img}', {i})" class="thumb-item" id="thumb-{i}" style="flex: 1; cursor: pointer; border-radius: 6px; overflow: hidden; border: 2px solid transparent;">
+        <img src="{img}" style="width: 100%; height: auto; display: block;">
+    </div>''' 
     for i, img in enumerate(encoded_photos)
 ])
 
@@ -55,15 +57,14 @@ album_html = f"""
     body {{ margin: 0; padding: 0; font-family: 'Gowun Batang', serif; background: transparent; overflow: hidden; }}
     #album-container {{ 
         display: flex; flex-direction: column; align-items: center; 
-        gap: 5px; width: 100%; max-width: 450px; margin: 0 auto; 
+        gap: 8px; width: 100%; max-width: 450px; margin: 0 auto; 
     }}
     .main-img-wrapper {{
         width: 100%;
         max-height: 480px;
-        /* [수정] 테두리 둥글게 하지 않음 (직각) */
-        border-radius: 0px !important; 
+        border-radius: 0px; 
         overflow: hidden;
-        background: transparent !important;
+        background: transparent;
         display: flex; align-items: center; justify-content: center;
     }}
     #main-img {{ 
@@ -71,7 +72,16 @@ album_html = f"""
         object-fit: contain;
         transition: opacity 0.2s ease;
     }}
-    .thumb-list {{ display: flex; justify-content: center; gap: 8px; width: 100%; padding: 0 15px; box-sizing: border-box; }}
+    /* 썸네일 리스트: 원본 비율 시 높이가 다를 수 있어 align-items: flex-end로 하단 정렬 */
+    .thumb-list {{ 
+        display: flex; 
+        justify-content: center; 
+        align-items: flex-end; 
+        gap: 6px; 
+        width: 100%; 
+        padding: 0 15px; 
+        box-sizing: border-box; 
+    }}
     .active {{ border-color: #FF8FAB !important; }}
     #counter {{ color: #FF8FAB; font-size: 0.8rem; margin: 0px 0 5px 0; font-weight: bold; }}
 </style>
@@ -100,10 +110,9 @@ window.onload = () => changeImg('{encoded_photos[0]}', 0);
 </script>
 """
 
-# 컴포넌트 높이 유지
 components.html(album_html, height=510)
 
-# 6. 정보 섹션 (DATE 카드)
+# 6. 정보 섹션
 st.markdown("""
 <div style="background-color: rgba(255, 255, 255, 0.8); padding: 25px 15px; border-radius: 35px; text-align: center; border: 1px solid rgba(255, 143, 171, 0.12); box-shadow: 0 10px 20px rgba(255, 143, 171, 0.05); position: relative; z-index: 10;">
     <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; font-family: 'Gowun Batang';">DATE</p>
@@ -114,7 +123,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 7. 하단 지도 버튼
+# 7. 지도 버튼
 st.markdown("""
 <div style="display: flex; justify-content: center; gap: 10px; width: 100%; margin-top: 15px;">
     <a href="https://map.kakao.com" target="_blank" style="flex: 1; text-decoration: none; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; font-family: 'Gowun Batang'; font-weight: 700; font-size: 0.85rem; text-align: center;">카카오맵 확인</a>
