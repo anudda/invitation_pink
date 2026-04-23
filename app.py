@@ -10,20 +10,25 @@ def get_b64(path):
     try: return "data:image/jpeg;base64," + base64.b64encode(open(path, "rb").read()).decode()
     except: return ""
 
-# 2. 통합 스타일 (위젯 간격 0으로 압축 & iframe 상단 여백 마이너스 처리)
+# 2. 통합 스타일 (위젯 간격 0, iframe 억지 마진 제거)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
 .stApp { background-color: #FFF5F5 !important; font-family: 'Gowun Batang', serif; }
 .block-container { padding: 2rem 1rem 3rem !important; }
-/* Streamlit 기본 위젯 간격을 0으로 만들어버림 */
+
+/* Streamlit 기본 위젯 간격 0 */
 div[data-testid="stVerticalBlock"] { gap: 0rem !important; }
 footer, header, #MainMenu { display: none !important; }
-/* 앨범 액자(iframe) 위쪽 마진을 음수로 당겨서 타이틀과 바짝 붙임 */
-iframe { border: none; margin-top: -20px !important; display: block; }
+
+/* [수정] 겹침의 원인이었던 마이너스 마진을 0으로 초기화 */
+iframe { border: none; margin-top: 0px !important; display: block; }
+
+/* 흩날리는 꽃잎 애니메이션 */
 .petal { position: fixed; top: -10%; animation: fall linear infinite; pointer-events: none; z-index: 0; }
 @keyframes fall { 100% { transform: translateY(110vh) rotate(720deg); } }
 </style>
+
 <div class="petal" style="left:10%; animation-duration:10s; font-size:20px;">🌸</div>
 <div class="petal" style="left:25%; animation-duration:12s; animation-delay:2s; font-size:16px;">💕</div>
 <div class="petal" style="left:40%; animation-duration:9s; animation-delay:1s; font-size:22px;">🌸</div>
@@ -32,9 +37,9 @@ iframe { border: none; margin-top: -20px !important; display: block; }
 <div class="petal" style="left:90%; animation-duration:8s; animation-delay:0s; font-size:20px;">💕</div>
 """, unsafe_allow_html=True)
 
-# 3. 타이틀 섹션 (하단 마진 0 강제)
+# 3. 타이틀 섹션 (아래쪽 패딩을 5px로 주어 적당한 숨구멍만 틔움)
 st.markdown("""
-<div style="text-align: center; position: relative; z-index: 10;">
+<div style="text-align: center; position: relative; z-index: 10; padding-bottom: 5px;">
     <h1 style="font-family: 'Gaegu', cursive; color: #FF8FAB; font-size: 2.8rem; margin: 0; line-height: 1.2;">지연이의<br>첫 생일 🎂</h1>
     <p style="color: #B2A496; font-size: 0.9rem; margin-top: 5px; margin-bottom: 0;">지연이의 첫 돌잔치에 초대합니다.</p>
 </div>
@@ -73,7 +78,7 @@ album_html = f"""
 # 컴포넌트 출력
 components.html(album_html, height=480)
 
-# 6. 정보 카드 및 버튼 (위쪽 여백 15px로 분리감 유지)
+# 6. 정보 카드 및 버튼
 st.markdown("""
 <div style="position: relative; z-index: 10; margin-top: 15px;">
     <div style="background: rgba(255,255,255,0.85); padding: 25px; border-radius: 30px; text-align: center; border: 1px solid rgba(255,143,171,0.2); box-shadow: 0 8px 15px rgba(255,143,171,0.05); margin-bottom: 15px;">
