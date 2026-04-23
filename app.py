@@ -7,7 +7,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. CSS 스타일 최적화 (타이틀 크기 하향 조정)
+# 2. CSS 스타일 최적화 (인스타 피드 스타일 추가)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
@@ -19,11 +19,10 @@ footer, header, #MainMenu, .stAppDeployButton, #viewerBadge {visibility: hidden;
 .main-title {
     font-family: 'Gaegu', cursive !important;
     color: #FF8FAB !important;
-    font-size: 2.8rem !important; /* 3.5rem에서 2.8rem으로 축소 */
+    font-size: 2.8rem !important;
     text-align: center;
     line-height: 1.2;
     margin-bottom: 5px;
-    letter-spacing: -1px; /* 자간을 좁혀 한 줄 유지 유도 */
 }
 
 .sub-quote {
@@ -34,33 +33,29 @@ footer, header, #MainMenu, .stAppDeployButton, #viewerBadge {visibility: hidden;
     margin-bottom: 25px;
 }
 
+/* 메인 이미지 영역 */
 .img-container {
     padding: 0px !important;
     background-color: transparent !important; 
     border-radius: 100px 100px 20px 20px;
     box-shadow: 0 10px 25px rgba(255, 143, 171, 0.15);
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
 }
 
 div[data-testid="stImage"] > img {
     border-radius: 100px 100px 20px 20px;
 }
 
-div[data-testid="stRadio"] div[role="radiogroup"] {
-    justify-content: center;
-    gap: 10px;
+/* 섬네일 이미지 버튼 스타일 */
+.stButton button {
+    padding: 0px !important;
+    border: 2px solid transparent !important;
+    border-radius: 10px !important;
+    overflow: hidden;
 }
-div[data-testid="stRadio"] label {
-    background-color: white !important;
-    border: 1px solid #FF8FAB !important;
-    color: #FF8FAB !important;
-    border-radius: 50px !important;
-    padding: 3px 12px !important;
-    font-size: 0.8rem !important;
-    font-family: 'Gowun Batang' !important;
+.stButton button:focus {
+    border: 2px solid #FF8FAB !important;
 }
 
 .info-card {
@@ -80,19 +75,33 @@ div[data-testid="stRadio"] label {
 <div class="petal" style="left:80%; animation-delay:4s;">💕</div>
 """, unsafe_allow_html=True)
 
-# 3. 본문 구성
-st.markdown('<h1 class="main-title">지연이의 첫 생일 🎂</h1>', unsafe_allow_html=True)
+# 3. 본문 구성 (지연이 이름과 케이크 줄바꿈)
+st.markdown('<h1 class="main-title">지연이의<br>첫 생일 🎂</h1>', unsafe_allow_html=True)
 st.markdown('<p class="sub-quote">세상에서 가장 소중한 지연이의<br>첫 돌잔치에 초대합니다.</p>', unsafe_allow_html=True)
 
-# 4. 사진 구성
-photos = ["baby.jpg", "1.jpg", "2.jpg", "3.jpg"] 
-selected_photo_idx = st.radio("갤러리", range(len(photos)), horizontal=True, label_visibility="collapsed")
+# 4. 사진 갤러리 로직
+photos = ["baby.jpg", "1.jpg", "2.jpg", "3.jpg"]
 
+# 세션 상태를 사용하여 현재 선택된 사진 저장
+if 'photo_idx' not in st.session_state:
+    st.session_state.photo_idx = 0
+
+# 메인 이미지 출력
 st.markdown('<div class="img-container">', unsafe_allow_html=True)
-st.image(photos[selected_photo_idx], use_column_width=True)
+st.image(photos[st.session_state.photo_idx], use_column_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown(f"<p style='text-align: center; color: #FF8FAB; font-size: 0.8rem; margin-top: -10px;'>{selected_photo_idx + 1} / {len(photos)}</p>", unsafe_allow_html=True)
+# 앨범 미리보기 (인스타그램 피드 스타일)
+cols = st.columns(len(photos))
+for i, photo in enumerate(photos):
+    with cols[i]:
+        # 이미지 버튼 클릭 시 세션 상태 변경
+        if st.button(f"img_{i}", key=f"btn_{i}", use_container_width=True):
+            st.session_state.photo_idx = i
+            st.rerun()
+        st.image(photo, use_column_width=True)
+
+st.markdown(f"<p style='text-align: center; color: #FF8FAB; font-size: 0.8rem; margin-top: 5px;'>지연이의 소중한 순간들</p>", unsafe_allow_html=True)
 
 # 5. 정보 섹션
 st.markdown("""
