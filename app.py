@@ -6,9 +6,9 @@ import base64
 st.set_page_config(page_title="🎂지연이의 돌잔치에 초대합니다", page_icon="🎂", layout="centered")
 
 # --- [여백 조절용 수치] 필요시 조절하세요! ---
-TOP_GAP = 30       # 타이틀과 사진 사이 간격
-BOTTOM_GAP = -40   # 사진과 아래 카드 사이 간격
-ALBUM_HEIGHT = 320 # 앨범 영역 전체 높이
+TOP_GAP = 20      # 타이틀과 사진 사이 간격
+BOTTOM_GAP = 20   # 사진과 아래 카드 사이 간격
+ALBUM_HEIGHT = 550 # 앨범 영역 전체 높이
 # ----------------------------------------------
 
 # [함수] 이미지 텍스트 변환
