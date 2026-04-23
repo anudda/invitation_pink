@@ -3,7 +3,7 @@ import streamlit.components.v1 as components
 import base64
 
 # 1. 페이지 설정
-st.set_page_config(page_title="지연이의 돌잔치에 초대합니다", page_icon="🎂", layout="centered")
+st.set_page_config(page_title="🎂지연이의 돌잔치에 초대합니다", page_icon="🎂", layout="centered")
 
 # --- [여백 조절용 수치] 필요시 조절하세요! ---
 TOP_GAP = 30       # 타이틀과 사진 사이 간격
@@ -60,8 +60,11 @@ iframe {{
 # 3. 타이틀 섹션 (서브 문구 폰트를 'Gaegu'로 변경하여 귀여움 업그레이드!)
 st.markdown(f"""
 <div style="text-align: center; position: relative; z-index: 10;">
-    <h1 style="font-family: 'Gaegu', cursive; color: #FF8FAB; font-size: 2.8rem; margin: 0; line-height: 1.2;">지연이의<br>첫 생일 🎂</h1>
-    <p style="font-family: 'Gaegu', cursive; color: #A89080; font-size: 1.3rem; margin-top: 8px; margin-bottom: {TOP_GAP}px; font-weight: bold;">지연이의 첫 돌잔치에 초대합니다.</p>
+    <h1 style="font-family: 'Gaegu', cursive; color: #FF8FAB; font-size: 2.8rem; margin: 0; line-height: 1.2;">귀여운 지연이의<br>첫 생일 잔치 🎂</h1>
+    <p style="font-family: 'Gaegu', cursive; color: #A89080; font-size: 1.25rem; margin-top: 15px; margin-bottom: {TOP_GAP}px; font-weight: bold; line-height: 1.6;">
+        향긋한 봄 내음이 가득한 4월<br>
+        지연이의 첫 돌잔치에 여러분을 초대합니다
+    </p>
 </div>
 """, unsafe_allow_html=True)
 
