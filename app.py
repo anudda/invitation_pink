@@ -7,7 +7,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. CSS 스타일 최적화 (인스타 피드 스타일 추가)
+# 2. CSS 스타일 최적화 (인스타 피드용 섬네일 정밀 보정)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
@@ -47,15 +47,19 @@ div[data-testid="stImage"] > img {
     border-radius: 100px 100px 20px 20px;
 }
 
-/* 섬네일 이미지 버튼 스타일 */
+/* 섬네일 버튼 내부 글자 숨기기 및 스타일 */
 .stButton button {
+    border: none !important;
     padding: 0px !important;
-    border: 2px solid transparent !important;
+    background-color: transparent !important;
     border-radius: 10px !important;
-    overflow: hidden;
+    transition: transform 0.2s;
 }
-.stButton button:focus {
-    border: 2px solid #FF8FAB !important;
+.stButton button:hover {
+    transform: scale(1.05);
+}
+.stButton button p {
+    display: none !important; /* 버튼 내 텍스트(img_i) 완전 삭제 */
 }
 
 .info-card {
@@ -75,14 +79,14 @@ div[data-testid="stImage"] > img {
 <div class="petal" style="left:80%; animation-delay:4s;">💕</div>
 """, unsafe_allow_html=True)
 
-# 3. 본문 구성 (지연이 이름과 케이크 줄바꿈)
+# 3. 본문 구성
 st.markdown('<h1 class="main-title">지연이의<br>첫 생일 🎂</h1>', unsafe_allow_html=True)
 st.markdown('<p class="sub-quote">세상에서 가장 소중한 지연이의<br>첫 돌잔치에 초대합니다.</p>', unsafe_allow_html=True)
 
-# 4. 사진 갤러리 로직
-photos = ["baby.jpg", "1.jpg", "2.jpg", "3.jpg"]
+# 4. 사진 갤러리 로직 (사용자님 파일명으로 수정)
+# 파일이 더 있으면 리스트에 추가만 하세요! (예: "baby4.jpg")
+photos = ["baby.jpg", "baby1.jpg", "baby2.jpg", "baby3.jpg"]
 
-# 세션 상태를 사용하여 현재 선택된 사진 저장
 if 'photo_idx' not in st.session_state:
     st.session_state.photo_idx = 0
 
@@ -91,17 +95,16 @@ st.markdown('<div class="img-container">', unsafe_allow_html=True)
 st.image(photos[st.session_state.photo_idx], use_column_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 앨범 미리보기 (인스타그램 피드 스타일)
+# 앨범 미리보기 (섬네일)
+st.markdown("<p style='text-align: center; color: #FF8FAB; font-size: 0.8rem; margin-bottom: 10px;'>다른 사진 보기 👇</p>", unsafe_allow_html=True)
 cols = st.columns(len(photos))
 for i, photo in enumerate(photos):
     with cols[i]:
-        # 이미지 버튼 클릭 시 세션 상태 변경
-        if st.button(f"img_{i}", key=f"btn_{i}", use_container_width=True):
+        # 버튼을 먼저 만들고 그 위에 이미지를 띄워 클릭 가능하게 함
+        if st.button("", key=f"btn_{i}"):
             st.session_state.photo_idx = i
             st.rerun()
         st.image(photo, use_column_width=True)
-
-st.markdown(f"<p style='text-align: center; color: #FF8FAB; font-size: 0.8rem; margin-top: 5px;'>지연이의 소중한 순간들</p>", unsafe_allow_html=True)
 
 # 5. 정보 섹션
 st.markdown("""
