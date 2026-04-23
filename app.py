@@ -110,7 +110,7 @@ window.onload = () => changeImg('{encoded_photos[0]}', 0);
 </script>
 """
 
-components.html(album_html, height=510)
+components.html(album_html, height=400)
 
 # 6. 정보 섹션
 st.markdown("""
