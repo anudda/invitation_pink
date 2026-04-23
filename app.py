@@ -96,7 +96,6 @@ st.image(photos[st.session_state.photo_idx], use_column_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
 # 앨범 미리보기 (섬네일)
-st.markdown("<p style='text-align: center; color: #FF8FAB; font-size: 0.8rem; margin-bottom: 10px;'>다른 사진 보기 👇</p>", unsafe_allow_html=True)
 cols = st.columns(len(photos))
 for i, photo in enumerate(photos):
     with cols[i]:
