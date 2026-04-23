@@ -10,15 +10,17 @@ def get_b64(path):
     try: return "data:image/jpeg;base64," + base64.b64encode(open(path, "rb").read()).decode()
     except: return ""
 
-# 2. 통합 스타일 (빈 줄 없이 꽉 채움)
+# 2. 통합 스타일 (위젯 간격 0으로 압축 & iframe 상단 여백 마이너스 처리)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
 .stApp { background-color: #FFF5F5 !important; font-family: 'Gowun Batang', serif; }
 .block-container { padding: 2rem 1rem 3rem !important; }
-div[data-testid="stVerticalBlock"] { gap: 0.8rem !important; }
+/* Streamlit 기본 위젯 간격을 0으로 만들어버림 */
+div[data-testid="stVerticalBlock"] { gap: 0rem !important; }
 footer, header, #MainMenu { display: none !important; }
-iframe { border: none; margin: 0 !important; display: block; }
+/* 앨범 액자(iframe) 위쪽 마진을 음수로 당겨서 타이틀과 바짝 붙임 */
+iframe { border: none; margin-top: -20px !important; display: block; }
 .petal { position: fixed; top: -10%; animation: fall linear infinite; pointer-events: none; z-index: 0; }
 @keyframes fall { 100% { transform: translateY(110vh) rotate(720deg); } }
 </style>
@@ -30,7 +32,7 @@ iframe { border: none; margin: 0 !important; display: block; }
 <div class="petal" style="left:90%; animation-duration:8s; animation-delay:0s; font-size:20px;">💕</div>
 """, unsafe_allow_html=True)
 
-# 3. 타이틀 섹션
+# 3. 타이틀 섹션 (하단 마진 0 강제)
 st.markdown("""
 <div style="text-align: center; position: relative; z-index: 10;">
     <h1 style="font-family: 'Gaegu', cursive; color: #FF8FAB; font-size: 2.8rem; margin: 0; line-height: 1.2;">지연이의<br>첫 생일 🎂</h1>
@@ -42,16 +44,14 @@ st.markdown("""
 photos = ["baby.jpg", "baby1.jpg", "baby2.jpg", "baby3.jpg"]
 b64_photos = [get_b64(p) for p in photos]
 
-# 5. [핵심 수정] 앨범 컴포넌트 
-# 썸네일을 정확히 23%로 고정하여 4장이 무조건 한 줄에 나오도록 강제
+# 5. 앨범 컴포넌트
 thumbs = "".join([f'<img class="t" src="{p}" onclick="s(this, \'{p}\', {i})">' for i, p in enumerate(b64_photos)])
 
 album_html = f"""
 <style>
     body {{ margin: 0; background: transparent; font-family: sans-serif; text-align: center; overflow: hidden; }}
-    .main {{ width: 100%; max-width: 450px; height: 350px; object-fit: contain; margin: 0 auto; display: block; }}
-    .row {{ display: flex; align-items: flex-end; justify-content: center; gap: 6px; max-width: 450px; margin: 10px auto 5px; padding: 0 10px; box-sizing: border-box; }}
-    /* 썸네일 폭을 정확히 계산 (4장 = 23%씩) */
+    .main {{ width: 100%; max-width: 450px; max-height: 350px; height: auto; object-fit: contain; margin: 0 auto; display: block; }}
+    .row {{ display: flex; align-items: flex-end; justify-content: center; gap: 6px; max-width: 450px; margin: 3px auto 5px; padding: 0 10px; box-sizing: border-box; }}
     .t {{ width: 23%; height: auto; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; object-fit: contain; display: block; }}
     .active {{ border-color: #FF8FAB !important; }}
     .cnt {{ color: #FF8FAB; font-size: 13px; font-weight: bold; margin: 0; }}
@@ -73,10 +73,9 @@ album_html = f"""
 # 컴포넌트 출력
 components.html(album_html, height=480)
 
-# 6. [핵심 수정] 정보 카드 및 버튼
-# 중간에 비어있는 줄(엔터)을 전부 삭제하여 Streamlit이 코드를 뱉어내는 버그 차단
+# 6. 정보 카드 및 버튼 (위쪽 여백 15px로 분리감 유지)
 st.markdown("""
-<div style="position: relative; z-index: 10;">
+<div style="position: relative; z-index: 10; margin-top: 15px;">
     <div style="background: rgba(255,255,255,0.85); padding: 25px; border-radius: 30px; text-align: center; border: 1px solid rgba(255,143,171,0.2); box-shadow: 0 8px 15px rgba(255,143,171,0.05); margin-bottom: 15px;">
         <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: bold; letter-spacing: 2px; margin: 0 0 5px;">DATE</p>
         <p style="font-size: 1.15rem; color: #4A4A4A; margin: 0 0 15px;">2026년 10월 24일 (토) 오후 1시</p>
