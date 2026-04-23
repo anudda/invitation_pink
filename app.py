@@ -44,29 +44,25 @@ footer, header, #MainMenu, .stAppDeployButton, #viewerBadge {visibility: hidden;
 }
 div[data-testid="stImage"] > img { border-radius: 100px 100px 20px 20px; }
 
-/* [중요] 섬네일 버튼 영역 - 모바일 한 줄 강제 정렬 */
-.thumbnail-wrapper {
+/* 섬네일 영역: 모바일에서도 무조건 가로 1행 유지 */
+.thumb-row {
     display: flex !important;
-    flex-direction: row !important;
+    flex-wrap: nowrap !important;
     justify-content: center !important;
-    gap: 8px !important;
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
-
-/* 섬네일 개별 버튼 스타일 */
-.stButton > button {
-    border: 2px solid transparent !important;
-    padding: 0px !important;
-    background-color: transparent !important;
-    border-radius: 10px !important;
+    gap: 10px !important;
+    margin-bottom: 20px !important;
     width: 100% !important;
-    aspect-ratio: 1/1 !important;
 }
 
-/* 선택된 섬네일 강조 */
-.stButton > button:active, .stButton > button:focus {
-    border: 2px solid #FF8FAB !important;
+/* 개별 섬네일 이미지 버튼 스타일 */
+.thumb-btn {
+    flex: 0 0 20% !important; /* 4장일 때 약 20%씩 차지 */
+    aspect-ratio: 1/1 !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    border: 2px solid transparent;
+    transition: 0.2s;
+    object-fit: cover !important;
 }
 
 .info-card {
@@ -100,19 +96,23 @@ st.markdown('<div class="img-container">', unsafe_allow_html=True)
 st.image(photos[st.session_state.photo_idx], use_column_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 5. 섬네일 영역 (가로 한 줄 배치 강제)
-# st.columns 대신 직접적인 가로 배치를 유도하기 위해 columns 내부 패딩을 극단적으로 줄임
-cols = st.columns(len(photos))
-for i, photo in enumerate(photos):
-    with cols[i]:
-        # 이미지 버튼 (이미지 자체를 버튼 위에 올리지 않고 버튼 클릭만 인식하게 구성)
-        if st.button(f"P{i+1}", key=f"btn_{i}", use_container_width=True):
-            st.session_state.photo_idx = i
-            st.rerun()
-        # 버튼 바로 아래에 작은 이미지 배치
-        st.image(photo, use_column_width=True)
+# 5. [핵심] 섬네일 버튼 (st.columns 대신 콤팩트한 radio 활용)
+# Streamlit에서 모바일 한 줄을 유지하는 가장 깔끔한 방법은 radio를 이미지처럼 속이는 것입니다.
+st.markdown("<p style='text-align: center; color: #FF8FAB; font-size: 0.7rem; margin-bottom: 10px;'>사진을 선택해 보세요 👇</p>", unsafe_allow_html=True)
 
-st.markdown(f"<p style='text-align: center; color: #FF8FAB; font-size: 0.7rem;'>좌측부터 사진을 눌러보세요 ( {st.session_state.photo_idx + 1} / {len(photos)} )</p>", unsafe_allow_html=True)
+# 라디오 버튼을 활용해 클릭 이벤트와 정렬을 동시에 해결
+selected_photo = st.radio(
+    "gallery",
+    range(len(photos)),
+    horizontal=True,
+    label_visibility="collapsed",
+    format_func=lambda x: f"사진 {x+1}"
+)
+
+# 라디오 버튼 선택 시 세션 업데이트 및 반영
+if selected_photo != st.session_state.photo_idx:
+    st.session_state.photo_idx = selected_photo
+    st.rerun()
 
 # 6. 정보 섹션
 st.markdown("""
