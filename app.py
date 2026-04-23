@@ -1,132 +1,105 @@
 import streamlit as st
 
-# 1. 페이지 설정
-st.set_page_config(
-    page_title="🌸 아기의 첫 번째 생일 파티에 초대합니다", 
-    page_icon="👶",
-    layout="centered"
-)
+st.set_page_config(page_title="아기 돌잔치 초대장", layout="centered")
 
-# 2. 스타일 설정 (예쁜 폰트 + 화사한 색상 + 애니메이션)
+# 전문적인 스타일링 (Pretendard 폰트와 뮤트톤 활용)
 st.markdown("""
     <style>
-    /* 구글 폰트에서 '나눔펜글씨'와 '감자꽃' 폰트 불러오기 */
-    @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Gamja+Flower&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;400;700&family=Noto+Sans+KR:wght@100;400&display=swap');
 
-    /* 배경색 설정 (따뜻한 아이보리) */
-    .stApp { background-color: #fffaf0 !important; }
+    /* 배경색: 고급스러운 샌드 베이지 */
+    .stApp { background-color: #F9F7F2 !important; }
     
-    /* [완벽 제거] 하단 Streamlit 로고 및 메뉴, 여백 삭제 */
-    footer {visibility: hidden !important;}
-    #MainMenu {visibility: hidden !important;}
-    header {visibility: hidden !important;}
-    .stAppDeployButton {display:none !important;}
-    #viewerBadge {display:none !important;}
-    div[data-testid="stStatusWidget"] {display:none !important;}
-    
-    /* 메인 타이틀 폰트 및 색상 (진한 로즈 핑크) */
-    h1 {
-        font-family: 'Nanum Pen Script', cursive !important;
-        color: #e91e63 !important;
-        font-size: 3.8rem !important;
+    footer, header, #MainMenu, .stAppDeployButton, #viewerBadge {visibility: hidden; display: none !important;}
+
+    /* 타이틀: 고급스러운 세리프체 */
+    .main-title {
+        font-family: 'Noto Serif KR', serif !important;
+        color: #5D5D5D !important;
+        font-size: 2.2rem !important;
         text-align: center;
-        line-height: 1.1;
-        margin-bottom: 10px;
+        letter-spacing: 5px;
+        margin-top: 60px;
+        font-weight: 200;
     }
 
-    /* 본문 및 박스 텍스트 폰트 (감자꽃 폰트) */
-    h3, p, span, b, div {
-        font-family: 'Gamja Flower', cursive !important;
-        color: #8d6e63 !important; /* 부드러운 갈색 */
-    }
-
-    /* 정보 박스 스타일 */
-    .info-box {
-        background-color: #ffffff !important;
-        padding: 25px;
-        border-radius: 20px;
-        box-shadow: 2px 5px 15px rgba(233, 30, 99, 0.1); /* 핑크빛 그림자 */
+    .sub-title {
+        font-family: 'Noto Sans KR', sans-serif !important;
+        color: #A68E74 !important;
         text-align: center;
-        margin-bottom: 25px;
-        border: 1px solid #fce4ec;
+        font-size: 0.9rem !important;
+        letter-spacing: 3px;
+        margin-bottom: 40px;
     }
 
-    /* 버튼 색상 커스텀 (카카오-네이버) */
-    div[data-testid="column"]:nth-of-type(1) div.stLinkButton a {
-        background-color: #FEE500 !important;
-        color: #3C1E1E !important;
-        border: none !important;
-        font-family: 'Gamja Flower', cursive !important;
+    /* 이미지 프레임 스타일 */
+    .img-frame {
+        border: 1px solid #E0DED7;
+        padding: 15px;
+        background-color: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        margin-bottom: 50px;
     }
-    div[data-testid="column"]:nth-of-type(2) div.stLinkButton a {
-        background-color: #03C75A !important;
+
+    /* 정보 섹션: 정돈된 느낌 */
+    .info-section {
+        text-align: center;
+        font-family: 'Noto Sans KR', sans-serif !important;
+        color: #5D5D5D !important;
+        line-height: 2.2;
+    }
+
+    .info-label { color: #A68E74 !important; font-size: 0.8rem; letter-spacing: 2px; }
+    .info-value { font-size: 1.1rem; font-weight: 400; margin-bottom: 20px; }
+
+    /* 버튼 스타일: 깔끔한 라인 버튼 */
+    div.stLinkButton a {
+        background-color: transparent !important;
+        color: #5D5D5D !important;
+        border: 1px solid #D1CFC7 !important;
+        border-radius: 0px !important;
+        font-size: 0.8rem !important;
+        transition: all 0.3s;
+    }
+    div.stLinkButton a:hover {
+        background-color: #5D5D5D !important;
         color: white !important;
-        border: none !important;
-        font-family: 'Gamja Flower', cursive !important;
-    }
-
-    /* 하트 애니메이션 */
-    @keyframes hearts-fall {
-        0% { top: -10%; }
-        100% { top: 100%; }
-    }
-    .heart {
-        position: fixed;
-        top: -10%;
-        z-index: 0;
-        animation: hearts-fall 10s linear infinite;
-        color: #ffb7c5;
-        opacity: 0.6;
-        font-size: 25px;
-        user-select: none;
     }
     </style>
-    
-    <div class="heart" style="left:10%; animation-delay:0s;">❤</div>
-    <div class="heart" style="left:30%; animation-delay:2s;">🌸</div>
-    <div class="heart" style="left:50%; animation-delay:4s;">✨</div>
-    <div class="heart" style="left:70%; animation-delay:6s;">💕</div>
-    <div class="heart" style="left:90%; animation-delay:8s;">🧸</div>
 """, unsafe_allow_html=True)
 
-# 3. 타이틀 및 문구
-st.markdown("<h1>아기의<br>첫 번째 생일 🎂</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; font-size: 1.5rem;'>꽃보다 예쁜 아기의<br>첫 돌잔치에 초대합니다 🌸</p>", unsafe_allow_html=True)
+# 상단 텍스트
+st.markdown('<p class="main-title">INVITATION</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">아기의 첫 번째 생일</p>', unsafe_allow_html=True)
 
-# 4. 사진 출력 (st.image 방식 사용)
-# use_column_width=True는 모바일 화면 너비에 꽉 차게 보여줍니다.
-# 'baby.jpg' 파일이 app.py와 같은 폴더에 있어야 합니다.
+# 이미지 출력 (프레임 효과 적용)
+st.markdown('<div class="img-frame">', unsafe_allow_html=True)
 st.image("baby.jpg", use_column_width=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
-st.write("---")
-
-# 5. 일정 및 장소 정보 (가상 예시 데이터)
+# 본문 정보
 st.markdown("""
-    <div class='info-box'>
-        <h3>📅 일시</h3>
-        <p style='font-size: 1.4rem; font-weight: bold;'>2026년 10월 24일 (토요일)</p>
-        <p style='font-size: 1.4rem; font-weight: bold;'>오후 1시 🕐</p>
-    </div>
-    
-    <div class='info-box'>
-        <h3>📍 장소</h3>
-        <p style='font-size: 1.2rem;'><b>행복 호텔 3층 라일락홀 🏢</b></p>
-        <p style='font-size: 1.0rem;'>서울특별시 강남구 행복로 123</p>
+    <div class="info-section">
+        <p class="info-label">DATE</p>
+        <p class="info-value">2026년 10월 24일 오후 1시</p>
+        <p class="info-label">LOCATION</p>
+        <p class="info-value">더 플라자 호텔 지스텀하우스</p>
+        <p style="font-size: 0.8rem; color: #888;">서울특별시 중구 태평로2가 23</p>
     </div>
 """, unsafe_allow_html=True)
 
-# 6. 지도 버튼
-# 실제 포트폴리오에서는 작동하는 지도 링크를 넣으셔도 됩니다.
+st.markdown("<br><br>", unsafe_allow_html=True)
+
+# 지도 버튼
 col1, col2 = st.columns(2)
 with col1:
-    st.link_button("💛 카카오맵 보기", "https://map.kakao.com", use_container_width=True)
+    st.link_button("NAVER MAP", "https://map.naver.com")
 with col2:
-    st.link_button("💚 네이버 지도 보기", "https://map.naver.com", use_container_width=True)
+    st.link_button("KAKAO MAP", "https://map.kakao.com")
 
-# 7. 하단 안내
+# 하단 멘트
 st.markdown("""
-    <p style='text-align: center; font-size: 1.1rem; color: #9e9e9e !important; margin-top: 50px;'>
-        🚗 주차는 호텔 지하 주차장을 이용해 주세요.<br>
-        아기의 첫 생일을 축하해 주셔서 감사합니다! 🙇‍♀️
+    <p style="text-align: center; color: #A68E74; font-size: 0.8rem; margin-top: 80px; letter-spacing: 1px;">
+        마음을 담아 초대합니다.
     </p>
 """, unsafe_allow_html=True)
