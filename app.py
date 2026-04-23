@@ -24,7 +24,7 @@ footer, header, #MainMenu {visibility: hidden; display: none !important;}
 .main-title { font-family: 'Gaegu', cursive !important; color: #FF8FAB !important; font-size: 2.8rem !important; text-align: center; line-height: 1.2; margin-bottom: 0; }
 .sub-quote { font-family: 'Gowun Batang', serif !important; color: #B2A496 !important; text-align: center; font-size: 0.9rem !important; margin-bottom: 5px; }
 
-/* 앨범 컴포넌트 하단 여백 강제 밀착 (더 공격적으로 당김) */
+/* 앨범 컴포넌트 하단 여백 초밀착 */
 iframe { margin-bottom: -75px !important; }
 
 .petal { position: fixed; top: -5%; z-index: 0; animation: petal-fall 12s infinite linear; color: #FFC2D1; font-size: 20px; pointer-events: none; }
@@ -42,7 +42,7 @@ st.markdown('<p class="sub-quote">지연이의 첫 돌잔치에 초대합니다.
 photos = ["baby.jpg", "baby1.jpg", "baby2.jpg", "baby3.jpg"]
 encoded_photos = [get_base64_image(p) for p in photos]
 
-# 5. [수정] 프레임 없는 반응형 앨범
+# 5. [수정] 직각 대표 사진 반응형 앨범
 thumb_items_html = "".join([
     f'<div onclick="changeImg(\'{img}\', {i})" class="thumb-item" id="thumb-{i}" style="flex: 1; aspect-ratio: 1/1; cursor: pointer; border-radius: 8px; overflow: hidden; border: 2px solid transparent;">'
     f'<img src="{img}" style="width: 100%; height: 100%; object-fit: cover;"></div>' 
@@ -60,9 +60,10 @@ album_html = f"""
     .main-img-wrapper {{
         width: 100%;
         max-height: 480px;
-        border-radius: 80px 80px 20px 20px;
+        /* [수정] 테두리 둥글게 하지 않음 (직각) */
+        border-radius: 0px !important; 
         overflow: hidden;
-        background: transparent !important; /* 배경 프레임 제거 */
+        background: transparent !important;
         display: flex; align-items: center; justify-content: center;
     }}
     #main-img {{ 
@@ -99,7 +100,7 @@ window.onload = () => changeImg('{encoded_photos[0]}', 0);
 </script>
 """
 
-# 컴포넌트 높이를 살짝 줄여 여백 밀착 가속화
+# 컴포넌트 높이 유지
 components.html(album_html, height=510)
 
 # 6. 정보 섹션 (DATE 카드)
