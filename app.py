@@ -7,7 +7,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. 스타일 및 레이아웃 설정 (CSS)
+# 2. 스타일 설정 (모바일 1행 유지를 위한 CSS)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
@@ -16,6 +16,7 @@ st.markdown("""
 .block-container { padding-top: 1rem !important; padding-bottom: 2rem !important; }
 footer, header, #MainMenu, .stAppDeployButton, #viewerBadge {visibility: hidden; display: none !important;}
 
+/* 타이틀 정렬 보정 */
 .main-title {
     font-family: 'Gaegu', cursive !important;
     color: #FF8FAB !important;
@@ -34,36 +35,49 @@ footer, header, #MainMenu, .stAppDeployButton, #viewerBadge {visibility: hidden;
 
 /* 메인 이미지 박스 */
 .img-container {
-    padding: 0px !important;
     border-radius: 100px 100px 20px 20px;
     box-shadow: 0 10px 25px rgba(255, 143, 171, 0.15);
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     overflow: hidden;
     display: flex;
     justify-content: center;
 }
 div[data-testid="stImage"] > img { border-radius: 100px 100px 20px 20px; }
 
-/* 섬네일 영역: 모바일 1줄 강제 */
-.thumb-box {
+/* [핵심] 섬네일 버튼 영역 - Streamlit 컬럼 무시하고 가로 한 줄 강제 */
+div[data-testid="column"] {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+}
+
+div[data-testid="stHorizontalBlock"] {
     display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
     justify-content: center !important;
-    gap: 10px !important;
+    gap: 8px !important;
+}
+
+/* 섬네일 버튼 내부 글자 숨기기 및 스타일 */
+.stButton button {
+    border: none !important;
+    padding: 0px !important;
+    background-color: transparent !important;
+    height: auto !important;
+}
+.stButton button p { display: none !important; } /* P1 글자 제거 */
+
+.info-card {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    padding: 25px 15px;
+    border-radius: 30px;
+    text-align: center;
+    margin-top: 10px;
     margin-bottom: 25px;
+    border: 1px solid rgba(255, 143, 171, 0.1);
 }
 
-/* 섬네일 개별 스타일 */
-.thumb-item {
-    width: 20%;
-    aspect-ratio: 1/1;
-    border-radius: 12px;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: 0.2s;
-    overflow: hidden;
-}
-
-/* 꽃잎 애니메이션 */
 .petal { position: fixed; top: -5%; z-index: 0; animation: petal-fall 12s infinite linear; color: #FFC2D1; font-size: 20px; pointer-events: none; }
 @keyframes petal-fall { 0% { transform: translateY(-5%) rotate(0deg); opacity: 0; } 10% { opacity: 0.8; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
 </style>
@@ -86,18 +100,20 @@ st.markdown('<div class="img-container">', unsafe_allow_html=True)
 st.image(photos[st.session_state.photo_idx], use_column_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 5. [핵심 수정] 섬네일 버튼 (st.columns 대신 클릭 가능한 이미지 버튼 구현)
-# 사진 4장을 한 행에 강제로 배치하기 위해 columns의 gap을 최소화하고 이미지 버튼화
-cols = st.columns(len(photos))
-for i, photo in enumerate(photos):
+# 5. 섬네일 영역 (가로 1줄 강제 배치)
+st.markdown("<p style='text-align: center; color: #FF8FAB; font-size: 0.7rem; margin-bottom: 5px;'>사진을 터치해 보세요 ✨</p>", unsafe_allow_html=True)
+
+# 4개의 컬럼 생성
+cols = st.columns(4)
+
+for i in range(4):
     with cols[i]:
-        # 투명한 버튼 위에 이미지를 씌우는 방식
-        # 버튼의 라벨을 공백으로 두어 글자가 안 보이게 하고, CSS로 이미지가 버튼을 덮게 함
-        if st.button(" ", key=f"thumb_{i}", use_container_width=True):
+        # 버튼을 먼저 배치 (글자 제거는 CSS에서 처리)
+        if st.button(" ", key=f"photo_btn_{i}", use_container_width=True):
             st.session_state.photo_idx = i
             st.rerun()
-        # 버튼 바로 아래 혹은 겹쳐서 이미지를 보여줌 (Streamlit의 한계상 바로 아래 배치)
-        st.image(photo, use_column_width=True)
+        # 버튼 바로 아래 이미지를 배치하여 섬네일 구현
+        st.image(photos[i], use_column_width=True)
 
 # 6. 정보 섹션
 st.markdown("""
