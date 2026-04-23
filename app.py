@@ -72,19 +72,21 @@ st.markdown(f"""
 photos = ["baby.jpg", "baby1.jpg", "baby2.jpg", "baby3.jpg"]
 b64_photos = [get_b64(p) for p in photos]
 
-# 5. 앨범 컴포넌트 (SyntaxError 해결 버전)
+# 5. 앨범 컴포넌트 (배경색 통일 버전)
 thumbs = "".join([f'<img class="t" src="{p}" onclick="s(this, \'{p}\', {i})">' for i, p in enumerate(b64_photos)])
 
-# f-string 대신 일반 문자열 결합을 사용하여 중괄호 에러를 방지합니다.
 album_html = """
 <style>
-    body { margin: 0; background: transparent; font-family: sans-serif; text-align: center; overflow: hidden; }
+    /* 전체 배경을 사이트 배경색(#FFF5F5)과 통일 */
+    body { margin: 0; background: #FFF5F5; font-family: sans-serif; text-align: center; overflow: hidden; }
+    
     .main { 
         width: 100%; 
         max-width: 450px; 
         height: 400px;
         object-fit: contain;
-        background: #fefefe;
+        /* 사진 뒤에 깔리는 배경색도 동일하게 설정 */
+        background: #FFF5F5;
         margin: 0 auto; 
         display: block; 
         border-radius: 12px;
