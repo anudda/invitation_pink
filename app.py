@@ -7,7 +7,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. CSS 스타일 (전문적인 정렬 및 디자인)
+# 2. CSS 스타일 최적화 (인스타 피드용 섬네일 정밀 보정)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
@@ -47,7 +47,7 @@ div[data-testid="stImage"] > img {
     border-radius: 100px 100px 20px 20px;
 }
 
-/* 섬네일 버튼 스타일 */
+/* 섬네일 버튼 내부 글자 숨기기 및 스타일 */
 .stButton button {
     border: none !important;
     padding: 0px !important;
@@ -55,8 +55,12 @@ div[data-testid="stImage"] > img {
     border-radius: 10px !important;
     transition: transform 0.2s;
 }
-.stButton button:hover { transform: scale(1.05); }
-.stButton button p { display: none !important; } /* 버튼 내 텍스트 숨기기 */
+.stButton button:hover {
+    transform: scale(1.05);
+}
+.stButton button p {
+    display: none !important; /* 버튼 내 텍스트(img_i) 완전 삭제 */
+}
 
 .info-card {
     background-color: rgba(255, 255, 255, 0.7) !important;
@@ -68,7 +72,6 @@ div[data-testid="stImage"] > img {
     border: 1px solid rgba(255, 143, 171, 0.1);
 }
 
-/* 꽃잎 애니메이션 */
 .petal { position: fixed; top: -5%; z-index: 0; animation: petal-fall 12s infinite linear; color: #FFC2D1; font-size: 20px; pointer-events: none; }
 @keyframes petal-fall { 0% { transform: translateY(-5%) rotate(0deg); opacity: 0; } 10% { opacity: 0.8; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
 </style>
@@ -76,11 +79,12 @@ div[data-testid="stImage"] > img {
 <div class="petal" style="left:80%; animation-delay:4s;">💕</div>
 """, unsafe_allow_html=True)
 
-# 3. 본문 타이틀
+# 3. 본문 구성
 st.markdown('<h1 class="main-title">지연이의<br>첫 생일 🎂</h1>', unsafe_allow_html=True)
 st.markdown('<p class="sub-quote">세상에서 가장 소중한 지연이의<br>첫 돌잔치에 초대합니다.</p>', unsafe_allow_html=True)
 
-# 4. 사진 갤러리 로직 (사용자님 파일명 반영)
+# 4. 사진 갤러리 로직 (사용자님 파일명으로 수정)
+# 파일이 더 있으면 리스트에 추가만 하세요! (예: "baby4.jpg")
 photos = ["baby.jpg", "baby1.jpg", "baby2.jpg", "baby3.jpg"]
 
 if 'photo_idx' not in st.session_state:
@@ -91,11 +95,12 @@ st.markdown('<div class="img-container">', unsafe_allow_html=True)
 st.image(photos[st.session_state.photo_idx], use_column_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 인스타 스타일 섬네일 목록
-st.markdown("<p style='text-align: center; color: #FF8FAB; font-size: 0.8rem; margin-bottom: 10px;'>앨범 보기 👇</p>", unsafe_allow_html=True)
+# 앨범 미리보기 (섬네일)
+st.markdown("<p style='text-align: center; color: #FF8FAB; font-size: 0.8rem; margin-bottom: 10px;'>다른 사진 보기 👇</p>", unsafe_allow_html=True)
 cols = st.columns(len(photos))
 for i, photo in enumerate(photos):
     with cols[i]:
+        # 버튼을 먼저 만들고 그 위에 이미지를 띄워 클릭 가능하게 함
         if st.button("", key=f"btn_{i}"):
             st.session_state.photo_idx = i
             st.rerun()
@@ -112,7 +117,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 6. 지도 버튼 (비율 5:5 대칭)
+# 6. 지도 버튼
 button_html = '<div style="display: flex; justify-content: center; gap: 10px; padding: 0 5px; margin-top: 10px; width: 100%;"><a href="https://map.kakao.com" target="_blank" style="flex: 1; text-decoration: none; background-color: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; font-family: \'Gowun Batang\', serif; font-weight: 700; font-size: 0.8rem; text-align: center; white-space: nowrap; display: inline-block;">카카오맵 확인</a><a href="https://map.naver.com" target="_blank" style="flex: 1; text-decoration: none; background-color: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; font-family: \'Gowun Batang\', serif; font-weight: 700; font-size: 0.8rem; text-align: center; white-space: nowrap; display: inline-block;">네이버 지도 확인</a></div>'
 st.markdown(button_html, unsafe_allow_html=True)
 
