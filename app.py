@@ -111,7 +111,7 @@ st.markdown("""
 
 # 6. 지도 버튼 (HTML/CSS로 강제 대칭 정렬)
 st.markdown("""
-    <div style="display: flex; justify-content: center; gap: 10px; padding: 0 10px;">
+    <div style="display: flex; justify-content: center; gap: 10px; padding: 0 5px; margin-top: 20px;">
         <a href="https://map.kakao.com" target="_blank" style="
             flex: 1;
             text-decoration: none;
@@ -125,7 +125,7 @@ st.markdown("""
             font-size: 0.85rem;
             text-align: center;
             white-space: nowrap;
-            box-shadow: 0 4px 6px rgba(255, 143, 171, 0.1);
+            display: inline-block;
         ">카카오맵 확인</a>
         
         <a href="https://map.naver.com" target="_blank" style="
@@ -141,7 +141,7 @@ st.markdown("""
             font-size: 0.85rem;
             text-align: center;
             white-space: nowrap;
-            box-shadow: 0 4px 6px rgba(255, 143, 171, 0.1);
+            display: inline-block;
         ">네이버 지도 확인</a>
     </div>
 """, unsafe_allow_html=True)
