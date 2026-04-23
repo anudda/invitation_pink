@@ -109,11 +109,39 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# 버튼 (너비 100% 및 줄바꿈 방지)
-col1, col2 = st.columns(2)
-with col1:
-    st.link_button("카카오맵 확인", "https://map.kakao.com")
-with col2:
-    st.link_button("네이버 지도 확인", "https://map.naver.com")
-
-st.markdown("<br><p style='text-align: center; color: #FF8FAB; font-family: \"Gaegu\"; font-size: 1.1rem;'>사랑으로 키운 아기의 첫 생일입니다.</p>", unsafe_allow_html=True)
+# 6. 지도 버튼 (HTML/CSS로 강제 대칭 정렬)
+st.markdown("""
+    <div style="display: flex; justify-content: center; gap: 10px; padding: 0 10px;">
+        <a href="https://map.kakao.com" target="_blank" style="
+            flex: 1;
+            text-decoration: none;
+            background-color: white;
+            color: #FF8FAB;
+            border: 1.5px solid #FF8FAB;
+            border-radius: 50px;
+            padding: 12px 0;
+            font-family: 'Gowun Batang', serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-align: center;
+            white-space: nowrap;
+            box-shadow: 0 4px 6px rgba(255, 143, 171, 0.1);
+        ">카카오맵 확인</a>
+        
+        <a href="https://map.naver.com" target="_blank" style="
+            flex: 1;
+            text-decoration: none;
+            background-color: white;
+            color: #FF8FAB;
+            border: 1.5px solid #FF8FAB;
+            border-radius: 50px;
+            padding: 12px 0;
+            font-family: 'Gowun Batang', serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-align: center;
+            white-space: nowrap;
+            box-shadow: 0 4px 6px rgba(255, 143, 171, 0.1);
+        ">네이버 지도 확인</a>
+    </div>
+""", unsafe_allow_html=True)
