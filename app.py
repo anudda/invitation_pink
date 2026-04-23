@@ -10,25 +10,21 @@ def get_b64(path):
     try: return "data:image/jpeg;base64," + base64.b64encode(open(path, "rb").read()).decode()
     except: return ""
 
-# 2. 통합 스타일 (위젯 간격 0, iframe 억지 마진 제거)
+# 2. 통합 스타일
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
 .stApp { background-color: #FFF5F5 !important; font-family: 'Gowun Batang', serif; }
 .block-container { padding: 2rem 1rem 3rem !important; }
-
-/* Streamlit 기본 위젯 간격 0 */
 div[data-testid="stVerticalBlock"] { gap: 0rem !important; }
 footer, header, #MainMenu { display: none !important; }
 
-/* [수정] 겹침의 원인이었던 마이너스 마진을 0으로 초기화 */
-iframe { border: none; margin-top: 0px !important; display: block; }
+/* [해결] 겹침을 유발하던 상단 마이너스 마진 제거 & 하단 여백을 끌어올림 */
+iframe { border: none; margin-top: 0px !important; margin-bottom: -30px !important; display: block; }
 
-/* 흩날리는 꽃잎 애니메이션 */
 .petal { position: fixed; top: -10%; animation: fall linear infinite; pointer-events: none; z-index: 0; }
 @keyframes fall { 100% { transform: translateY(110vh) rotate(720deg); } }
 </style>
-
 <div class="petal" style="left:10%; animation-duration:10s; font-size:20px;">🌸</div>
 <div class="petal" style="left:25%; animation-duration:12s; animation-delay:2s; font-size:16px;">💕</div>
 <div class="petal" style="left:40%; animation-duration:9s; animation-delay:1s; font-size:22px;">🌸</div>
@@ -37,11 +33,12 @@ iframe { border: none; margin-top: 0px !important; display: block; }
 <div class="petal" style="left:90%; animation-duration:8s; animation-delay:0s; font-size:20px;">💕</div>
 """, unsafe_allow_html=True)
 
-# 3. 타이틀 섹션 (아래쪽 패딩을 5px로 주어 적당한 숨구멍만 틔움)
+# 3. 타이틀 섹션
+# [해결] margin-bottom을 15px로 주어 사진과 겹치지 않게 숨구멍 확보
 st.markdown("""
-<div style="text-align: center; position: relative; z-index: 10; padding-bottom: 5px;">
+<div style="text-align: center; position: relative; z-index: 10;">
     <h1 style="font-family: 'Gaegu', cursive; color: #FF8FAB; font-size: 2.8rem; margin: 0; line-height: 1.2;">지연이의<br>첫 생일 🎂</h1>
-    <p style="color: #B2A496; font-size: 0.9rem; margin-top: 5px; margin-bottom: 0;">지연이의 첫 돌잔치에 초대합니다.</p>
+    <p style="color: #B2A496; font-size: 0.9rem; margin-top: 5px; margin-bottom: 15px;">지연이의 첫 돌잔치에 초대합니다.</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -55,8 +52,9 @@ thumbs = "".join([f'<img class="t" src="{p}" onclick="s(this, \'{p}\', {i})">' f
 album_html = f"""
 <style>
     body {{ margin: 0; background: transparent; font-family: sans-serif; text-align: center; overflow: hidden; }}
-    .main {{ width: 100%; max-width: 450px; max-height: 350px; height: auto; object-fit: contain; margin: 0 auto; display: block; }}
-    .row {{ display: flex; align-items: flex-end; justify-content: center; gap: 6px; max-width: 450px; margin: 3px auto 5px; padding: 0 10px; box-sizing: border-box; }}
+    /* [해결] 최대 높이를 300px로 다이어트시켜서 하단 텅 빈 공간 축소 */
+    .main {{ width: 100%; max-width: 450px; max-height: 300px; height: auto; object-fit: contain; margin: 0 auto; display: block; }}
+    .row {{ display: flex; align-items: flex-end; justify-content: center; gap: 6px; max-width: 450px; margin: 5px auto 5px; padding: 0 10px; box-sizing: border-box; }}
     .t {{ width: 23%; height: auto; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; object-fit: contain; display: block; }}
     .active {{ border-color: #FF8FAB !important; }}
     .cnt {{ color: #FF8FAB; font-size: 13px; font-weight: bold; margin: 0; }}
@@ -75,12 +73,13 @@ album_html = f"""
 </script>
 """
 
-# 컴포넌트 출력
-components.html(album_html, height=480)
+# [해결] iframe 높이 자체를 480에서 410으로 대폭 깎아서 아래쪽 태평양 여백 제거!
+components.html(album_html, height=410)
 
 # 6. 정보 카드 및 버튼
+# [해결] margin-top을 0px로 하여 앨범 아래에 찰싹 달라붙게 함
 st.markdown("""
-<div style="position: relative; z-index: 10; margin-top: 15px;">
+<div style="position: relative; z-index: 10; margin-top: 0px;">
     <div style="background: rgba(255,255,255,0.85); padding: 25px; border-radius: 30px; text-align: center; border: 1px solid rgba(255,143,171,0.2); box-shadow: 0 8px 15px rgba(255,143,171,0.05); margin-bottom: 15px;">
         <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: bold; letter-spacing: 2px; margin: 0 0 5px;">DATE</p>
         <p style="font-size: 1.15rem; color: #4A4A4A; margin: 0 0 15px;">2026년 10월 24일 (토) 오후 1시</p>
