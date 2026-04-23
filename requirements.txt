@@ -1,2 +1,2 @@
 streamlit
-streamlit-image-carousel
+streamlit-js-eval
