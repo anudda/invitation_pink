@@ -12,16 +12,20 @@ def get_base64_image(image_path):
             return "data:image/jpeg;base64," + base64.b64encode(img_file.read()).decode()
     except: return ""
 
-# 2. 스타일 설정
+# 2. 메인 스타일 설정 (여백 제거 집중)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
 .stApp { background-color: #FFF5F5 !important; }
-.block-container { padding-top: 1.5rem !important; padding-left: 1rem !important; padding-right: 1rem !important; }
+
+/* 전체 여백 조절 */
+.block-container { padding-top: 1.5rem !important; padding-bottom: 0px !important; }
+div[data-testid="stVerticalBlock"] > div { padding: 0px !important; margin: 0px !important; }
+
 footer, header, #MainMenu {visibility: hidden; display: none !important;}
 
-.main-title { font-family: 'Gaegu', cursive !important; color: #FF8FAB !important; font-size: 2.8rem !important; text-align: center; line-height: 1.2; margin-bottom: 5px; }
-.sub-quote { font-family: 'Gowun Batang', serif !important; color: #B2A496 !important; text-align: center; font-size: 0.95rem !important; margin-bottom: 25px; }
+.main-title { font-family: 'Gaegu', cursive !important; color: #FF8FAB !important; font-size: 2.8rem !important; text-align: center; line-height: 1.2; margin-bottom: 0; }
+.sub-quote { font-family: 'Gowun Batang', serif !important; color: #B2A496 !important; text-align: center; font-size: 0.9rem !important; margin-bottom: 15px; }
 
 .petal { position: fixed; top: -5%; z-index: 0; animation: petal-fall 12s infinite linear; color: #FFC2D1; font-size: 20px; pointer-events: none; }
 @keyframes petal-fall { 0% { transform: translateY(-5%) rotate(0deg); opacity: 0; } 10% { opacity: 0.8; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
@@ -38,9 +42,9 @@ st.markdown('<p class="sub-quote">지연이의 첫 돌잔치에 초대합니다.
 photos = ["baby.jpg", "baby1.jpg", "baby2.jpg", "baby3.jpg"]
 encoded_photos = [get_base64_image(p) for p in photos]
 
-# 5. [수정] 반응형 앨범 컴포넌트
+# 5. 앨범 컴포넌트 (높이 최적화)
 thumb_items_html = "".join([
-    f'<div onclick="changeImg(\'{img}\', {i})" class="thumb-item" id="thumb-{i}" style="flex: 1; aspect-ratio: 1/1; cursor: pointer; border-radius: 12px; overflow: hidden; border: 2px solid transparent; background: #fff;">'
+    f'<div onclick="changeImg(\'{img}\', {i})" class="thumb-item" id="thumb-{i}" style="flex: 1; aspect-ratio: 1/1; cursor: pointer; border-radius: 10px; overflow: hidden; border: 2px solid transparent; background: #eee;">'
     f'<img src="{img}" style="width: 100%; height: 100%; object-fit: cover;"></div>' 
     for i, img in enumerate(encoded_photos)
 ])
@@ -49,78 +53,50 @@ album_html = f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap');
     body {{ margin: 0; padding: 0; font-family: 'Gowun Batang', serif; overflow: hidden; }}
-    #album-container {{ display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; max-width: 500px; margin: 0 auto; }}
-    
-    /* 메인 이미지: 가로세로 비율 강제 해제, 원본 유지형 */
+    #album-container {{ display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }}
     .main-img-wrapper {{
         width: 100%;
-        max-height: 70vh; /* 화면 높이의 70%를 넘지 않도록 */
+        max-height: 400px;
         border-radius: 80px 80px 20px 20px;
-        box-shadow: 0 10px 25px rgba(255, 143, 171, 0.2);
+        box-shadow: 0 10px 20px rgba(255, 143, 171, 0.15);
         overflow: hidden;
         background: #fff;
         display: flex;
         justify-content: center;
-        align-items: center;
     }}
-    #main-img {{
-        width: 100%;
-        height: auto;
-        object-fit: contain; /* 사진이 잘리지 않게 전체를 보여줌 */
-        transition: opacity 0.3s ease-in-out;
-    }}
-    
-    .thumb-list {{ display: flex; justify-content: center; gap: 8px; width: 100%; padding: 5px; box-sizing: border-box; }}
-    .active {{ border-color: #FF8FAB !important; transform: scale(1.05); }}
-    #counter {{ color: #FF8FAB; font-size: 0.85rem; margin: 0; font-weight: bold; }}
+    #main-img {{ width: 100%; height: 100%; object-fit: contain; transition: opacity 0.3s; }}
+    .thumb-list {{ display: flex; justify-content: center; gap: 8px; width: 100%; padding: 0 5px; box-sizing: border-box; }}
+    .active {{ border-color: #FF8FAB !important; }}
+    #counter {{ color: #FF8FAB; font-size: 0.8rem; margin: 0; font-weight: bold; }}
 </style>
-
 <div id="album-container">
-    <div class="main-img-wrapper">
-        <img id="main-img" src="{encoded_photos[0]}">
-    </div>
-    <div class="thumb-list">
-        {thumb_items_html}
-    </div>
+    <div class="main-img-wrapper"><img id="main-img" src="{encoded_photos[0]}"></div>
+    <div class="thumb-list">{thumb_items_html}</div>
     <p id="counter">1 / {len(photos)}</p>
 </div>
-
 <script>
 function changeImg(src, idx) {{
     const mainImg = document.getElementById('main-img');
     const counter = document.getElementById('counter');
-    mainImg.style.opacity = 0;
+    mainImg.style.opacity = 0.5;
     setTimeout(() => {{
         mainImg.src = src;
         mainImg.style.opacity = 1;
         counter.innerText = (idx + 1) + " / {len(photos)}";
-    }}, 200);
-    
+    }}, 150);
     const thumbs = document.getElementsByClassName('thumb-item');
-    for(let i=0; i<thumbs.length; i++) {{
-        thumbs[i].classList.remove('active');
-    }}
+    for(let i=0; i<thumbs.length; i++) {{ thumbs[i].classList.remove('active'); }}
     document.getElementById('thumb-' + idx).classList.add('active');
 }}
 window.onload = () => changeImg('{encoded_photos[0]}', 0);
 </script>
 """
 
-# [수정] height를 넉넉하게 늘리거나 유동적으로 잡을 수 있도록 함
-# 사진 세로가 길 경우를 대비해 700px로 여유를 줌 (PC에서 잘림 방지)
-components.html(album_html, height=700)
+# [여백 해결 키포인트] 높이를 700에서 530으로 줄여서 하단과의 거리를 좁힘
+components.html(album_html, height=530)
 
-# 6. 정보 섹션 & 지도 버튼 (기존 유지)
-st.markdown(f"""
-<div style="background-color: rgba(255, 255, 255, 0.7); padding: 25px 15px; border-radius: 30px; text-align: center; border: 1px solid rgba(255, 143, 171, 0.1); margin: 0 0 20px 0;">
+# 6. 정보 섹션 (상단 여백 마이너스 조정)
+st.markdown("""
+<div style="background-color: rgba(255, 255, 255, 0.7); padding: 25px 15px; border-radius: 30px; text-align: center; border: 1px solid rgba(255, 143, 171, 0.1); margin-top: -10px;">
     <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; font-family: 'Gowun Batang';">DATE</p>
-    <p style="font-family: 'Gowun Batang'; font-size: 1.1rem; color: #5D5D5D; margin-bottom: 18px;">2026년 10월 24일 (토) 오후 1시</p>
-    <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; font-family: 'Gowun Batang';">LOCATION</p>
-    <p style="font-family: 'Gowun Batang'; font-size: 1.1rem; color: #5D5D5D; margin-bottom: 4px;"><b>행복 가든 스테이</b></p>
-    <p style="font-family: 'Gowun Batang'; font-size: 0.8rem; color: #999;">서울특별시 강남구 행복로 123</p>
-</div>
-""", unsafe_allow_html=True)
-
-st.markdown('<div style="display: flex; justify-content: center; gap: 10px; width: 100%;"><a href="https://map.kakao.com" target="_blank" style="flex: 1; text-decoration: none; background-color: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; font-family: \'Gowun Batang\', serif; font-weight: 700; font-size: 0.85rem; text-align: center;">카카오맵 확인</a><a href="https://map.naver.com" target="_blank" style="flex: 1; text-decoration: none; background-color: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; font-family: \'Gowun Batang\', serif; font-weight: 700; font-size: 0.85rem; text-align: center;">네이버 지도 확인</a></div>', unsafe_allow_html=True)
-
-st.markdown("<br><p style='text-align: center; color: #FF8FAB; font-family: \"Gaegu\"; font-size: 1.1rem;'>지연이의 첫 생일을 축하해 주셔서 감사합니다.</p>", unsafe_allow_html=True)
+    <p style
