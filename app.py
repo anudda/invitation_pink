@@ -111,4 +111,8 @@ st.markdown("""
 # 4. 지도 버튼 (비율 1:1 대칭 정렬)
 col1, col2 = st.columns(2)
 with col1:
-    st.link_button("카카오맵 확인
+    st.link_button("카카오맵 확인", "https://map.kakao.com")
+with col2:
+    st.link_button("네이버 지도 확인", "https://map.naver.com")
+
+st.markdown("<br><br><p style='text-align: center; color: #FF8FAB; font-family: \"Gaegu\"; font-size: 1.1rem;'>사랑으로 키운 아기의 첫 생일입니다.</p>", unsafe_allow_html=True)
