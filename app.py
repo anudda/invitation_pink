@@ -5,10 +5,10 @@ import base64
 # 1. 페이지 설정
 st.set_page_config(page_title="지연이의 돌잔치에 초대합니다", page_icon="🎂", layout="centered")
 
-# --- 간격 조절용 숫자 (여기서 숫자를 바꿔보세요!) ---
-TOP_GAP = 30       # 1. 타이틀과 사진 사이 간격 (클수록 멀어짐, 겹치면 더 키우세요)
-BOTTOM_GAP = -50   # 2. 사진과 아래 카드 사이 간격 (마이너스 값이 클수록 위로 바짝 붙음)
-ALBUM_HEIGHT = 400 # 3. 앨범 영역 전체 높이 (사진 밑에 흰 여백이 너무 길면 이 숫자를 줄이세요)
+# --- [여백 조절용 수치] 여기서 숫자를 바꿔보세요! ---
+TOP_GAP = 20       # 타이틀과 사진 사이 간격 (겹치면 키우세요)
+BOTTOM_GAP = -40   # 사진과 아래 카드 사이 간격 (더 붙이려면 -50, -60)
+ALBUM_HEIGHT = 410 # 앨범 영역 전체 높이 (아래 여백이 길면 줄이세요)
 # ----------------------------------------------
 
 # [함수] 이미지 텍스트 변환
@@ -16,16 +16,16 @@ def get_b64(path):
     try: return "data:image/jpeg;base64," + base64.b64encode(open(path, "rb").read()).decode()
     except: return ""
 
-# 2. 통합 스타일
+# 2. 통합 스타일 및 꽃잎 애니메이션 복구
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
+
 .stApp {{ background-color: #FFF5F5 !important; font-family: 'Gowun Batang', serif; }}
 .block-container {{ padding: 2rem 1rem 3rem !important; }}
 div[data-testid="stVerticalBlock"] {{ gap: 0rem !important; }}
 footer, header, #MainMenu {{ display: none !important; }}
 
-/* iframe(앨범 틀) 위치 및 간격 설정 */
 iframe {{ 
     border: none; 
     margin-top: 0px !important; 
@@ -33,12 +33,34 @@ iframe {{
     display: block; 
 }}
 
-.petal {{ position: fixed; top: -10%; animation: fall linear infinite; pointer-events: none; z-index: 0; }}
-@keyframes fall {{ 100% {{ transform: translateY(110vh) rotate(720deg); }} }}
+/* 꽃잎 애니메이션 정의 */
+.petal {{ 
+    position: fixed; 
+    top: -10%; 
+    z-index: 0; 
+    animation: fall linear infinite; 
+    color: #FFC2D1; 
+    pointer-events: none; 
+}}
+
+@keyframes fall {{
+    0% {{ transform: translateY(-10%) rotate(0deg); opacity: 0; }}
+    10% {{ opacity: 0.8; }}
+    100% {{ transform: translateY(110vh) rotate(720deg); opacity: 0; }}
+}}
 </style>
+
+<div class="petal" style="left:10%; animation-duration:10s; font-size:20px;">🌸</div>
+<div class="petal" style="left:25%; animation-duration:12s; animation-delay:2s; font-size:16px;">💕</div>
+<div class="petal" style="left:40%; animation-duration:9s; animation-delay:1s; font-size:22px;">🌸</div>
+<div class="petal" style="left:60%; animation-duration:13s; animation-delay:4s; font-size:15px;">💕</div>
+<div class="petal" style="left:75%; animation-duration:11s; animation-delay:3s; font-size:18px;">🌸</div>
+<div class="petal" style="left:90%; animation-duration:8s; animation-delay:0s; font-size:20px;">💕</div>
+<div class="petal" style="left:15%; animation-duration:14s; animation-delay:5s; font-size:14px; color:#FFB3C1;">🌸</div>
+<div class="petal" style="left:85%; animation-duration:12s; animation-delay:7s; font-size:19px; color:#FFD1DC;">💕</div>
 """, unsafe_allow_html=True)
 
-# 3. 타이틀 섹션 (TOP_GAP 변수로 아래 간격 조절)
+# 3. 타이틀 섹션
 st.markdown(f"""
 <div style="text-align: center; position: relative; z-index: 10;">
     <h1 style="font-family: 'Gaegu', cursive; color: #FF8FAB; font-size: 2.8rem; margin: 0; line-height: 1.2;">지연이의<br>첫 생일 🎂</h1>
@@ -46,7 +68,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# 4. 사진 데이터 변환
+# 4. 사진 데이터 준비
 photos = ["baby.jpg", "baby1.jpg", "baby2.jpg", "baby3.jpg"]
 b64_photos = [get_b64(p) for p in photos]
 
@@ -56,7 +78,7 @@ album_html = f"""
 <style>
     body {{ margin: 0; background: transparent; font-family: sans-serif; text-align: center; overflow: hidden; }}
     .main {{ width: 100%; max-width: 450px; max-height: 320px; height: auto; object-fit: contain; margin: 0 auto; display: block; }}
-    .row {{ display: flex; align-items: flex-end; justify-content: center; gap: 6px; max-width: 450px; margin: 5px auto 5px; padding: 0 10px; box-sizing: border-box; }}
+    .row {{ display: flex; align-items: flex-end; justify-content: center; gap: 6px; max-width: 450px; margin: 3px auto 5px; padding: 0 10px; box-sizing: border-box; }}
     .t {{ width: 22%; height: auto; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; object-fit: contain; display: block; }}
     .active {{ border-color: #FF8FAB !important; }}
     .cnt {{ color: #FF8FAB; font-size: 13px; font-weight: bold; margin: 0; }}
@@ -74,7 +96,6 @@ album_html = f"""
     document.querySelector('.t').classList.add('active');
 </script>
 """
-# ALBUM_HEIGHT 변수로 전체 틀 높이 조절
 components.html(album_html, height=ALBUM_HEIGHT)
 
 # 6. 정보 카드 및 버튼
@@ -87,6 +108,10 @@ st.markdown("""
         <p style="font-size: 1.1rem; color: #4A4A4A; font-weight: bold; margin: 0 0 2px;">행복 가든 스테이</p>
         <p style="font-size: 0.8rem; color: #888; margin: 0;">서울특별시 강남구 행복로 123</p>
     </div>
-    <p style="text-align: center; color: #FF8FAB; font-family: 'Gaegu', cursive; font-size: 1.15rem; margin-top: 20px;">지연이의 첫 생일을 축하해 주셔서 감사합니다.</p>
+    <div style="display: flex; gap: 10px;">
+        <a href="https://map.kakao.com" target="_blank" style="flex: 1; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; text-align: center; text-decoration: none; font-weight: bold; font-size: 0.85rem;">카카오맵 확인</a>
+        <a href="https://map.naver.com" target="_blank" style="flex: 1; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; text-align: center; text-decoration: none; font-weight: bold; font-size: 0.85rem;">네이버 지도 확인</a>
+    </div>
+    <p style="text-align: center; color: #FF8FAB; font-family: 'Gaegu', cursive; font-size: 1.15rem; margin-top: 30px;">지연이의 첫 생일을 축하해 주셔서 감사합니다.</p>
 </div>
 """, unsafe_allow_html=True)
