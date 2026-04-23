@@ -3,7 +3,7 @@ import streamlit.components.v1 as components
 import base64
 
 # 1. 페이지 설정
-st.set_page_config(page_title="🎂지연이의 돌잔치에 초대합니다", page_icon="🎂", layout="centered")
+st.set_page_config(page_title="돌잔치 러블리 시안", page_icon="🎂", layout="centered")
 
 # --- [여백 조절용 수치] 필요시 조절하세요! ---
 TOP_GAP = 20      # 타이틀과 사진 사이 간격
