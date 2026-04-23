@@ -5,10 +5,10 @@ import base64
 # 1. 페이지 설정
 st.set_page_config(page_title="지연이의 돌잔치에 초대합니다", page_icon="🎂", layout="centered")
 
-# --- [여백 조절용 수치] 여기서 숫자를 바꿔보세요! ---
-TOP_GAP = 20       # 타이틀과 사진 사이 간격 (겹치면 키우세요)
-BOTTOM_GAP = -40   # 사진과 아래 카드 사이 간격 (더 붙이려면 -50, -60)
-ALBUM_HEIGHT = 410 # 앨범 영역 전체 높이 (아래 여백이 길면 줄이세요)
+# --- [여백 조절용 수치] 필요시 조절하세요! ---
+TOP_GAP = 15       # 타이틀과 사진 사이 간격
+BOTTOM_GAP = -40   # 사진과 아래 카드 사이 간격
+ALBUM_HEIGHT = 410 # 앨범 영역 전체 높이
 # ----------------------------------------------
 
 # [함수] 이미지 텍스트 변환
@@ -16,7 +16,7 @@ def get_b64(path):
     try: return "data:image/jpeg;base64," + base64.b64encode(open(path, "rb").read()).decode()
     except: return ""
 
-# 2. 통합 스타일 및 꽃잎 애니메이션 복구
+# 2. 통합 스타일 및 꽃잎 애니메이션
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
@@ -33,7 +33,6 @@ iframe {{
     display: block; 
 }}
 
-/* 꽃잎 애니메이션 정의 */
 .petal {{ 
     position: fixed; 
     top: -10%; 
@@ -56,15 +55,13 @@ iframe {{
 <div class="petal" style="left:60%; animation-duration:13s; animation-delay:4s; font-size:15px;">💕</div>
 <div class="petal" style="left:75%; animation-duration:11s; animation-delay:3s; font-size:18px;">🌸</div>
 <div class="petal" style="left:90%; animation-duration:8s; animation-delay:0s; font-size:20px;">💕</div>
-<div class="petal" style="left:15%; animation-duration:14s; animation-delay:5s; font-size:14px; color:#FFB3C1;">🌸</div>
-<div class="petal" style="left:85%; animation-duration:12s; animation-delay:7s; font-size:19px; color:#FFD1DC;">💕</div>
 """, unsafe_allow_html=True)
 
-# 3. 타이틀 섹션
+# 3. 타이틀 섹션 (서브 문구 폰트를 'Gaegu'로 변경하여 귀여움 업그레이드!)
 st.markdown(f"""
 <div style="text-align: center; position: relative; z-index: 10;">
     <h1 style="font-family: 'Gaegu', cursive; color: #FF8FAB; font-size: 2.8rem; margin: 0; line-height: 1.2;">지연이의<br>첫 생일 🎂</h1>
-    <p style="color: #B2A496; font-size: 0.9rem; margin-top: 5px; margin-bottom: {TOP_GAP}px;">지연이의 첫 돌잔치에 초대합니다.</p>
+    <p style="font-family: 'Gaegu', cursive; color: #A89080; font-size: 1.3rem; margin-top: 8px; margin-bottom: {TOP_GAP}px; font-weight: bold;">지연이의 첫 돌잔치에 초대합니다.</p>
 </div>
 """, unsafe_allow_html=True)
 
