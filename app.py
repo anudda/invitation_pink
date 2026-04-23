@@ -2,24 +2,23 @@ import streamlit as st
 
 st.set_page_config(page_title="아기 돌잔치 초대장", page_icon="🌸", layout="centered")
 
-# CSS 수정 (상단 여백 제거 및 버튼 정렬 보정)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
 
     .stApp { background-color: #FFF5F5 !important; }
     
-    /* 상단 여백 최소화 */
-    .block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+    /* 1. 전체 컨테이너 여백 제거 */
+    .block-container { padding-top: 1rem !important; padding-bottom: 2rem !important; }
     footer, header, #MainMenu, .stAppDeployButton, #viewerBadge {visibility: hidden; display: none !important;}
 
     .main-title {
         font-family: 'Gaegu', cursive !important;
         color: #FF8FAB !important;
-        font-size: 4rem !important;
+        font-size: 3.5rem !important;
         text-align: center;
         line-height: 1.1;
-        margin-bottom: 0px; /* 타이틀 하단 여백 제거 */
+        margin-bottom: 5px;
     }
 
     .sub-quote {
@@ -27,44 +26,48 @@ st.markdown("""
         color: #B2A496 !important;
         text-align: center;
         font-size: 0.9rem !important;
-        margin-top: 10px;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
 
-    /* 이미지 컨테이너: 상단 여백 없이 꽉 차게 */
+    /* 2. 이미지 프레임 및 흰 선 완벽 제거 */
     .img-container {
-        padding: 5px; /* 내부 여백 축소 */
-        background: white;
+        padding: 0px !important; /* 내부 여백 완전 제거 */
+        background-color: white;
         border-radius: 100px 100px 20px 20px;
         box-shadow: 0 10px 25px rgba(255, 143, 171, 0.1);
-        margin-bottom: 40px;
-        line-height: 0; /* 이미지 하단 미세 여백 제거 */
+        margin-bottom: 35px;
+        overflow: hidden; /* 자식 요소(이미지)가 튀어나가지 않게 */
+        display: flex;
+        justify-content: center;
+    }
+    
+    /* Streamlit 내부 이미지 패딩 강제 제거 */
+    div[data-testid="stImage"] > img {
+        padding: 0px !important;
+        margin: 0px !important;
+        border-radius: 100px 100px 20px 20px;
     }
 
     .info-card {
         background-color: rgba(255, 255, 255, 0.7) !important;
-        padding: 30px 20px;
+        padding: 25px 15px;
         border-radius: 30px;
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
         border: 1px solid rgba(255, 143, 171, 0.1);
     }
 
-    /* 버튼 정렬 보정: 두 버튼이 동일한 너비로 좌우 대칭 */
+    /* 3. 버튼 정렬 및 줄바꿈 방지 */
     div[data-testid="column"] {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        padding: 0 5px !important; /* 컬럼 간격 조절 */
     }
     
     div.stLinkButton {
         width: 100% !important;
-        display: flex;
-        justify-content: center;
     }
 
     div.stLinkButton a {
-        width: 90% !important; /* 버튼 너비를 90%로 고정해 균형 유지 */
+        width: 100% !important; 
         background-color: white !important;
         color: #FF8FAB !important;
         border: 1.5px solid #FF8FAB !important;
@@ -72,27 +75,25 @@ st.markdown("""
         font-family: 'Gowun Batang', serif !important;
         font-weight: 700 !important;
         text-align: center;
-        font-size: 0.85rem !important;
+        font-size: 0.8rem !important; /* 글자 크기 살짝 축소해서 줄바꿈 방지 */
+        white-space: nowrap !important; /* 절대 줄바꿈 금지 */
+        padding: 10px 5px !important;
+        display: block !important;
     }
 
-    /* 배경 애니메이션 */
-    @keyframes petal-fall {
-        0% { transform: translateY(-5%) rotate(0deg); opacity: 0; }
-        10% { opacity: 0.8; }
-        100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
-    }
     .petal { position: fixed; top: -5%; z-index: 0; animation: petal-fall 12s infinite linear; color: #FFC2D1; font-size: 20px; }
+    @keyframes petal-fall { 0% { transform: translateY(-5%) rotate(0deg); opacity: 0; } 10% { opacity: 0.8; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
     </style>
     
     <div class="petal" style="left:15%; animation-delay:0s;">🌸</div>
     <div class="petal" style="left:80%; animation-delay:4s;">💕</div>
 """, unsafe_allow_html=True)
 
-# 3. 본문 구성
+# 본문 구성
 st.markdown('<h1 class="main-title">아기의<br>첫 번째 생일</h1>', unsafe_allow_html=True)
 st.markdown('<p class="sub-quote">소중한 우리 아기의 첫 걸음을<br>함께 축하해 주세요.</p>', unsafe_allow_html=True)
 
-# 이미지 영역 (상단 여백 제거된 컨테이너)
+# 이미지 영역 (흰 선 제거 타겟)
 st.markdown('<div class="img-container">', unsafe_allow_html=True)
 st.image("baby.jpg", use_column_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
@@ -100,19 +101,19 @@ st.markdown('</div>', unsafe_allow_html=True)
 # 정보 섹션
 st.markdown("""
     <div class="info-card">
-        <p style="color: #FF8FAB; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 10px;">DATE</p>
-        <p style="font-family: 'Gowun Batang'; font-size: 1.15rem; color: #5D5D5D; margin-bottom: 20px;">2026년 10월 24일 (토) 오후 1시</p>
-        <p style="color: #FF8FAB; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 10px;">LOCATION</p>
-        <p style="font-family: 'Gowun Batang'; font-size: 1.15rem; color: #5D5D5D; margin-bottom: 5px;"><b>행복 가든 스테이</b></p>
-        <p style="font-family: 'Gowun Batang'; font-size: 0.85rem; color: #999;">서울특별시 강남구 행복로 123</p>
+        <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px;">DATE</p>
+        <p style="font-family: 'Gowun Batang'; font-size: 1.1rem; color: #5D5D5D; margin-bottom: 18px;">2026년 10월 24일 (토) 오후 1시</p>
+        <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px;">LOCATION</p>
+        <p style="font-family: 'Gowun Batang'; font-size: 1.1rem; color: #5D5D5D; margin-bottom: 4px;"><b>행복 가든 스테이</b></p>
+        <p style="font-family: 'Gowun Batang'; font-size: 0.8rem; color: #999;">서울특별시 강남구 행복로 123</p>
     </div>
 """, unsafe_allow_html=True)
 
-# 4. 지도 버튼 (비율 1:1 대칭 정렬)
+# 버튼 (너비 100% 및 줄바꿈 방지)
 col1, col2 = st.columns(2)
 with col1:
     st.link_button("카카오맵 확인", "https://map.kakao.com")
 with col2:
     st.link_button("네이버 지도 확인", "https://map.naver.com")
 
-st.markdown("<br><br><p style='text-align: center; color: #FF8FAB; font-family: \"Gaegu\"; font-size: 1.1rem;'>사랑으로 키운 아기의 첫 생일입니다.</p>", unsafe_allow_html=True)
+st.markdown("<br><p style='text-align: center; color: #FF8FAB; font-family: \"Gaegu\"; font-size: 1.1rem;'>사랑으로 키운 아기의 첫 생일입니다.</p>", unsafe_allow_html=True)
