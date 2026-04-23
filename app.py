@@ -5,52 +5,36 @@ import base64
 # 1. 페이지 설정
 st.set_page_config(page_title="지연이의 돌잔치에 초대합니다", page_icon="🎂", layout="centered")
 
-# --- [여백 조절용 수치] 여기서 수치를 조정하세요! ---
-TOP_GAP = 15       # 타이틀 구름과 사진 사이 간격
-BOTTOM_GAP = -45   # 사진과 아래 카드 사이 간격
-ALBUM_HEIGHT = 410 # 앨범 영역 전체 높이
-# ----------------------------------------------
-
 # [함수] 이미지 텍스트 변환
 def get_b64(path):
     try: return "data:image/jpeg;base64," + base64.b64encode(open(path, "rb").read()).decode()
     except: return ""
 
 # 2. 통합 스타일 및 배경 애니메이션
-st.markdown(f"""
+st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
-
-.stApp {{ background-color: #FFF5F5 !important; font-family: 'Gowun Batang', serif; }}
-.block-container {{ padding: 2rem 1rem 3rem !important; }}
-div[data-testid="stVerticalBlock"] {{ gap: 0rem !important; }}
-footer, header, #MainMenu {{ display: none !important; }}
-
-iframe {{ 
-    border: none; 
-    margin-top: 0px !important; 
-    margin-bottom: {BOTTOM_GAP}px !important; 
-    display: block; 
-}}
-
-/* 꽃잎 애니메이션 */
-.petal {{ position: fixed; top: -10%; z-index: 0; animation: fall linear infinite; color: #FFC2D1; pointer-events: none; }}
-@keyframes fall {{
-    0% {{ transform: translateY(-10%) rotate(0deg); opacity: 0; }}
-    10% {{ opacity: 0.8; }}
-    100% {{ transform: translateY(110vh) rotate(720deg); opacity: 0; }}
-}}
+.stApp { background-color: #FFF5F5 !important; font-family: 'Gowun Batang', serif; }
+.block-container { padding: 2rem 1rem 3rem !important; }
+div[data-testid="stVerticalBlock"] { gap: 0rem !important; }
+footer, header, #MainMenu { display: none !important; }
+iframe { border: none; margin-top: 0px !important; margin-bottom: -45px !important; display: block; }
+.petal { position: fixed; top: -10%; z-index: 0; animation: fall linear infinite; color: #FFC2D1; pointer-events: none; }
+@keyframes fall {
+    0% { transform: translateY(-10%) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
 </style>
-
 <div class="petal" style="left:10%; animation-duration:10s; font-size:20px;">🌸</div>
 <div class="petal" style="left:25%; animation-duration:12s; animation-delay:2s; font-size:16px;">💕</div>
-<div class="petal" style="left:40%; animation-duration:9s; animation-delay:1s; font-size:22px;">🌸</div>
+<div class="petal" style="left:50%; animation-duration:9s; animation-delay:1s; font-size:22px;">🌸</div>
 <div class="petal" style="left:75%; animation-duration:11s; animation-delay:3s; font-size:18px;">🌸</div>
 <div class="petal" style="left:90%; animation-duration:8s; animation-delay:0s; font-size:20px;">💕</div>
 """, unsafe_allow_html=True)
 
-# 3. 타이틀 섹션 (구름 배경 디자인 적용)
-st.markdown(f"""
+# 3. 타이틀 섹션 (가장 안전한 따옴표 문법으로 작성)
+st.markdown("""
 <div style="text-align: center; position: relative; z-index: 10; padding: 10px 0;">
     <div style="background: rgba(255, 255, 255, 0.7); 
                 display: inline-block; 
@@ -58,21 +42,19 @@ st.markdown(f"""
                 border-radius: 60px; 
                 box-shadow: 0 10px 25px rgba(255, 143, 171, 0.08);
                 border: 1px solid rgba(255, 255, 255, 0.5);">
-        
         <h1 style="font-family: 'Gaegu', cursive; color: #FF8FAB; font-size: 2.6rem; margin: 0; line-height: 1.1;">
             지연이의 첫 돌 🎂
         </h1>
-        
         <p style="font-family: 'Gaegu', cursive; color: #A89080; font-size: 1.1rem; margin-top: 8px; margin-bottom: 0; font-weight: bold; line-height: 1.5;">
             향긋한 봄 내음 가득한 4월,<br>
             지연이의 첫 생일에 초대합니다 🌸
         </p>
     </div>
-    <div style="margin-bottom: {TOP_GAP}px;"></div>
+    <div style="margin-bottom: 20px;"></div>
 </div>
 """, unsafe_allow_html=True)
 
-# 4. 사진 데이터 준비
+# 4. 사진 데이터
 photos = ["baby.jpg", "baby1.jpg", "baby2.jpg", "baby3.jpg"]
 b64_photos = [get_b64(p) for p in photos]
 
@@ -100,7 +82,7 @@ album_html = f"""
     document.querySelector('.t').classList.add('active');
 </script>
 """
-components.html(album_html, height=ALBUM_HEIGHT)
+components.html(album_html, height=410)
 
 # 6. 정보 카드 및 버튼
 st.markdown("""
@@ -113,8 +95,8 @@ st.markdown("""
         <p style="font-size: 0.8rem; color: #888; margin: 0;">서울특별시 강남구 행복로 123</p>
     </div>
     <div style="display: flex; gap: 10px;">
-        <a href="https://map.kakao.com" target="_blank" style="flex: 1; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; text-align: center; text-decoration: none; font-weight: bold; font-size: 0.85rem; font-family: 'Gowun Batang';">카카오맵 확인</a>
-        <a href="https://map.naver.com" target="_blank" style="flex: 1; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; text-align: center; text-decoration: none; font-weight: bold; font-size: 0.85rem; font-family: 'Gowun Batang';">네이버 지도 확인</a>
+        <a href="https://map.kakao.com" target="_blank" style="flex: 1; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; text-align: center; text-decoration: none; font-weight: bold; font-size: 0.85rem;">카카오맵 확인</a>
+        <a href="https://map.naver.com" target="_blank" style="flex: 1; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; text-align: center; text-decoration: none; font-weight: bold; font-size: 0.85rem;">네이버 지도 확인</a>
     </div>
     <p style="text-align: center; color: #FF8FAB; font-family: 'Gaegu', cursive; font-size: 1.3rem; margin-top: 30px;">지연이의 첫 생일을 축하해 주셔서 감사합니다.</p>
 </div>
