@@ -7,7 +7,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. 스타일 및 레이아웃 설정
+# 2. 스타일 및 레이아웃 설정 (CSS)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
@@ -44,36 +44,26 @@ footer, header, #MainMenu, .stAppDeployButton, #viewerBadge {visibility: hidden;
 }
 div[data-testid="stImage"] > img { border-radius: 100px 100px 20px 20px; }
 
-/* 섬네일 영역: 모바일에서도 무조건 가로 1행 유지 */
-.thumb-row {
+/* 섬네일 영역: 모바일 1줄 강제 */
+.thumb-box {
     display: flex !important;
-    flex-wrap: nowrap !important;
     justify-content: center !important;
     gap: 10px !important;
-    margin-bottom: 20px !important;
-    width: 100% !important;
+    margin-bottom: 25px;
 }
 
-/* 개별 섬네일 이미지 버튼 스타일 */
-.thumb-btn {
-    flex: 0 0 20% !important; /* 4장일 때 약 20%씩 차지 */
-    aspect-ratio: 1/1 !important;
-    border-radius: 10px !important;
-    cursor: pointer !important;
+/* 섬네일 개별 스타일 */
+.thumb-item {
+    width: 20%;
+    aspect-ratio: 1/1;
+    border-radius: 12px;
+    cursor: pointer;
     border: 2px solid transparent;
     transition: 0.2s;
-    object-fit: cover !important;
+    overflow: hidden;
 }
 
-.info-card {
-    background-color: rgba(255, 255, 255, 0.7) !important;
-    padding: 25px 15px;
-    border-radius: 30px;
-    text-align: center;
-    margin-bottom: 25px;
-    border: 1px solid rgba(255, 143, 171, 0.1);
-}
-
+/* 꽃잎 애니메이션 */
 .petal { position: fixed; top: -5%; z-index: 0; animation: petal-fall 12s infinite linear; color: #FFC2D1; font-size: 20px; pointer-events: none; }
 @keyframes petal-fall { 0% { transform: translateY(-5%) rotate(0deg); opacity: 0; } 10% { opacity: 0.8; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
 </style>
@@ -96,23 +86,18 @@ st.markdown('<div class="img-container">', unsafe_allow_html=True)
 st.image(photos[st.session_state.photo_idx], use_column_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 5. [핵심] 섬네일 버튼 (st.columns 대신 콤팩트한 radio 활용)
-# Streamlit에서 모바일 한 줄을 유지하는 가장 깔끔한 방법은 radio를 이미지처럼 속이는 것입니다.
-st.markdown("<p style='text-align: center; color: #FF8FAB; font-size: 0.7rem; margin-bottom: 10px;'>사진을 선택해 보세요 👇</p>", unsafe_allow_html=True)
-
-# 라디오 버튼을 활용해 클릭 이벤트와 정렬을 동시에 해결
-selected_photo = st.radio(
-    "gallery",
-    range(len(photos)),
-    horizontal=True,
-    label_visibility="collapsed",
-    format_func=lambda x: f"사진 {x+1}"
-)
-
-# 라디오 버튼 선택 시 세션 업데이트 및 반영
-if selected_photo != st.session_state.photo_idx:
-    st.session_state.photo_idx = selected_photo
-    st.rerun()
+# 5. [핵심 수정] 섬네일 버튼 (st.columns 대신 클릭 가능한 이미지 버튼 구현)
+# 사진 4장을 한 행에 강제로 배치하기 위해 columns의 gap을 최소화하고 이미지 버튼화
+cols = st.columns(len(photos))
+for i, photo in enumerate(photos):
+    with cols[i]:
+        # 투명한 버튼 위에 이미지를 씌우는 방식
+        # 버튼의 라벨을 공백으로 두어 글자가 안 보이게 하고, CSS로 이미지가 버튼을 덮게 함
+        if st.button(" ", key=f"thumb_{i}", use_container_width=True):
+            st.session_state.photo_idx = i
+            st.rerun()
+        # 버튼 바로 아래 혹은 겹쳐서 이미지를 보여줌 (Streamlit의 한계상 바로 아래 배치)
+        st.image(photo, use_column_width=True)
 
 # 6. 정보 섹션
 st.markdown("""
