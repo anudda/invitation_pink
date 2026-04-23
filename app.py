@@ -10,22 +10,27 @@ def get_base64_image(image_path):
             return "data:image/jpeg;base64," + base64.b64encode(img_file.read()).decode()
     except: return ""
 
-# 1. 스타일 설정 (여백 제거)
+# 1. 스타일 설정 (여백 박멸)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
 .stApp { background-color: #FFF5F5 !important; }
 
+/* Streamlit 기본 간격 제거 */
 div[data-testid="stVerticalBlock"] { gap: 0rem !important; }
 .block-container { padding-top: 1.5rem !important; padding-bottom: 0px !important; }
 footer, header, #MainMenu {visibility: hidden; display: none !important;}
 
 .main-title { font-family: 'Gaegu', cursive !important; color: #FF8FAB !important; font-size: 2.8rem !important; text-align: center; line-height: 1.2; margin-bottom: 0; }
-.sub-quote { font-family: 'Gowun Batang', serif !important; color: #B2A496 !important; text-align: center; font-size: 0.9rem !important; margin-bottom: 5px; }
+.sub-quote { font-family: 'Gowun Batang', serif !important; color: #B2A496 !important; text-align: center; font-size: 0.9rem !important; margin-bottom: 0px; }
 
-/* 앨범과 하단 정보 사이를 바짝 붙이기 위한 설정 */
-iframe { margin-bottom: -20px !important; }
+/* 앨범 컴포넌트 여백 강제 조정 */
+iframe { 
+    margin-top: -10px !important;
+    margin-bottom: -10px !important; /* 여기를 너무 크게 잡으면 겹치니 적당히 조절 */
+}
 
+/* 꽃잎 */
 .petal { position: fixed; top: -5%; z-index: 0; animation: petal-fall 12s infinite linear; color: #FFC2D1; font-size: 20px; pointer-events: none; }
 @keyframes petal-fall { 0% { transform: translateY(-5%) rotate(0deg); opacity: 0; } 10% { opacity: 0.8; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
 </style>
@@ -53,9 +58,9 @@ album_html = f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap');
     body {{ margin: 0; padding: 0; font-family: 'Gowun Batang', serif; background: transparent; overflow: hidden; }}
-    #album-container {{ display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; max-width: 450px; margin: 0 auto; padding-bottom: 10px; }}
-    .main-img-wrapper {{ width: 100%; max-height: 450px; overflow: hidden; display: flex; align-items: center; justify-content: center; }}
-    #main-img {{ width: 100%; height: auto; max-height: 450px; object-fit: contain; transition: opacity 0.2s; }}
+    #album-container {{ display: flex; flex-direction: column; align-items: center; gap: 5px; width: 100%; max-width: 450px; margin: 0 auto; }}
+    .main-img-wrapper {{ width: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; }}
+    #main-img {{ width: 100%; height: auto; max-height: 400px; object-fit: contain; transition: opacity 0.2s; }}
     .thumb-list {{ display: flex; justify-content: center; align-items: flex-end; gap: 6px; width: 100%; padding: 0 15px; box-sizing: border-box; }}
     .active {{ border-color: #FF8FAB !important; }}
     #counter {{ color: #FF8FAB; font-size: 0.8rem; margin: 2px 0; font-weight: bold; }}
@@ -83,12 +88,23 @@ window.onload = () => changeImg('{encoded_photos[0]}', 0);
 </script>
 """
 
-# [해결] 높이를 넉넉히 주되, 아래 마진을 iframe에서 당겨서 여백을 없앰
-components.html(album_html, height=520)
+# [여백 해결의 핵심]
+# 모바일과 PC의 화면 폭에 따라 높이를 다르게 설정하는 로직
+import streamlit_js_eval as st_js
+width = st_js.get_page_width()
+
+if width and width < 600:
+    # 모바일: 화면이 좁으니 액자 높이도 낮게
+    h_val = 380 
+else:
+    # PC: 화면이 넓으니 액자 높이도 높게
+    h_val = 480
+
+components.html(album_html, height=h_val)
 
 # 5. 정보 섹션
 st.markdown("""
-<div style="background-color: rgba(255, 255, 255, 0.8); padding: 25px 15px; border-radius: 35px; text-align: center; border: 1px solid rgba(255, 143, 171, 0.12); box-shadow: 0 10px 20px rgba(255, 143, 171, 0.05); margin-top: -30px;">
+<div style="background-color: rgba(255, 255, 255, 0.8); padding: 25px 15px; border-radius: 35px; text-align: center; border: 1px solid rgba(255, 143, 171, 0.12); box-shadow: 0 10px 20px rgba(255, 143, 171, 0.05); margin-top: 0px;">
     <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; font-family: 'Gowun Batang';">DATE</p>
     <p style="font-family: 'Gowun Batang'; font-size: 1.15rem; color: #4A4A4A; margin-bottom: 18px;">2026년 10월 24일 (토) 오후 1시</p>
     <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; font-family: 'Gowun Batang';">LOCATION</p>
