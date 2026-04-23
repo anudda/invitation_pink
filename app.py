@@ -18,8 +18,8 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gaegu:wght@300;400&display=swap');
 .stApp { background-color: #FFF5F5 !important; }
 
-/* 레이아웃 기본 여백 */
-.block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+/* 전체 컨테이너 여백 */
+.block-container { padding-top: 2rem !important; padding-bottom: 3rem !important; }
 div[data-testid="stVerticalBlock"] { gap: 0rem !important; }
 
 footer, header, #MainMenu {visibility: hidden; display: none !important;}
@@ -37,14 +37,14 @@ footer, header, #MainMenu {visibility: hidden; display: none !important;}
     color: #B2A496 !important; 
     text-align: center; 
     font-size: 0.9rem !important; 
-    margin-bottom: 20px; /* 타이틀과 사진 사이 여백 확보 */
+    margin-bottom: 20px;
 }
 
-/* 앨범 프레임과 하단 정보카드 사이 밀착 */
+/* 앨범 프레임 - 하단 정보카드와 겹치지 않게 조절 */
 iframe { 
     width: 100%; 
     border: none; 
-    margin-bottom: -60px !important; /* 하단 여백 제거 */
+    margin-bottom: -45px !important; /* 겹치지 않을 만큼만 적당히 당김 */
 }
 
 .petal { position: fixed; top: -5%; z-index: 0; animation: petal-fall 12s infinite linear; color: #FFC2D1; font-size: 20px; pointer-events: none; }
@@ -62,7 +62,7 @@ st.markdown('<p class="sub-quote">지연이의 첫 돌잔치에 초대합니다.
 photos = ["baby.jpg", "baby1.jpg", "baby2.jpg", "baby3.jpg"]
 encoded_photos = [get_base64_image(p) for p in photos]
 
-# 5. 앨범 컴포넌트 (높이 500px로 넉넉히 확보하여 안보임 방지)
+# 5. 앨범 컴포넌트
 thumb_html = "".join([
     f'<div onclick="changeImg(\'{img}\', {i})" class="thumb-item" id="thumb-{i}"><img src="{img}"></div>'
     for i, img in enumerate(encoded_photos)
@@ -80,10 +80,10 @@ album_content = f"""
     #album-container {{ display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }}
     .main-wrapper {{ 
         width: 100%; 
-        height: 350px; /* 대표 사진 공간 고정 */
+        height: 350px; 
         display: flex; justify-content: center; align-items: center; 
     }}
-    #main-img {{ max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 0; }}
+    #main-img {{ max-width: 100%; max-height: 100%; object-fit: contain; }}
     .thumb-list {{ 
         display: flex; flex-wrap: nowrap; justify-content: center; align-items: flex-end; 
         gap: 6px; width: 100%; padding: 0 10px; box-sizing: border-box; 
@@ -112,25 +112,24 @@ window.onload = () => changeImg('{encoded_photos[0]}', 0);
 </script>
 """
 
-# 높이를 500으로 설정해 안보이는 현상 해결
 components.html(album_content, height=500)
 
-# 6. 정보 섹션
+# 6. [해결] 정보 섹션과 버튼을 하나의 덩어리로 묶음
 st.markdown("""
-<div style="background-color: rgba(255, 255, 255, 0.8); padding: 25px 15px; border-radius: 35px; text-align: center; border: 1px solid rgba(255, 143, 171, 0.12); box-shadow: 0 10px 20px rgba(255, 143, 171, 0.05); position: relative; z-index: 10;">
-    <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; font-family: 'Gowun Batang';">DATE</p>
-    <p style="font-family: 'Gowun Batang'; font-size: 1.15rem; color: #4A4A4A; margin-bottom: 18px;">2026년 10월 24일 (토) 오후 1시</p>
-    <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; font-family: 'Gowun Batang';">LOCATION</p>
-    <p style="font-family: 'Gowun Batang'; font-size: 1.1rem; color: #4A4A4A; margin-bottom: 4px;"><b>행복 가든 스테이</b></p>
-    <p style="font-family: 'Gowun Batang'; font-size: 0.8rem; color: #888;">서울특별시 강남구 행복로 123</p>
-</div>
-""", unsafe_allow_html=True)
+<div style="position: relative; z-index: 10;">
+    <div style="background-color: rgba(255, 255, 255, 0.8); padding: 25px 15px; border-radius: 35px; text-align: center; border: 1px solid rgba(255, 143, 171, 0.12); box-shadow: 0 10px 20px rgba(255, 143, 171, 0.05); margin-bottom: 15px;">
+        <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; font-family: 'Gowun Batang';">DATE</p>
+        <p style="font-family: 'Gowun Batang'; font-size: 1.15rem; color: #4A4A4A; margin-bottom: 18px;">2026년 10월 24일 (토) 오후 1시</p>
+        <p style="color: #FF8FAB; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; font-family: 'Gowun Batang';">LOCATION</p>
+        <p style="font-family: 'Gowun Batang'; font-size: 1.1rem; color: #4A4A4A; margin-bottom: 4px;"><b>행복 가든 스테이</b></p>
+        <p style="font-family: 'Gowun Batang'; font-size: 0.8rem; color: #888;">서울특별시 강남구 행복로 123</p>
+    </div>
 
-# 7. 지도 버튼
-st.markdown("""
-<div style="display: flex; justify-content: center; gap: 10px; width: 100%; margin-top: 15px;">
-    <a href="https://map.kakao.com" target="_blank" style="flex: 1; text-decoration: none; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; font-family: 'Gowun Batang'; font-weight: 700; font-size: 0.85rem; text-align: center;">카카오맵 확인</a>
-    <a href="https://map.naver.com" target="_blank" style="flex: 1; text-decoration: none; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; font-family: 'Gowun Batang'; font-weight: 700; font-size: 0.85rem; text-align: center;">네이버 지도 확인</a>
+    <div style="display: flex; justify-content: center; gap: 10px; width: 100%;">
+        <a href="https://map.kakao.com" target="_blank" style="flex: 1; text-decoration: none; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; font-family: 'Gowun Batang'; font-weight: 700; font-size: 0.85rem; text-align: center;">카카오맵 확인</a>
+        <a href="https://map.naver.com" target="_blank" style="flex: 1; text-decoration: none; background: white; color: #FF8FAB; border: 1.5px solid #FF8FAB; border-radius: 50px; padding: 12px 0; font-family: 'Gowun Batang'; font-weight: 700; font-size: 0.85rem; text-align: center;">네이버 지도 확인</a>
+    </div>
+
+    <p style='text-align: center; color: #FF8FAB; font-family: "Gaegu"; font-size: 1.1rem; margin-top: 30px;'>지연이의 첫 생일을 축하해 주셔서 감사합니다.</p>
 </div>
-<p style='text-align: center; color: #FF8FAB; font-family: "Gaegu"; font-size: 1.1rem; margin-top: 30px;'>지연이의 첫 생일을 축하해 주셔서 감사합니다.</p>
 """, unsafe_allow_html=True)
